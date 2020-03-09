@@ -4,6 +4,7 @@ from config import *
 from predictor import predictors
 import random
 
+
 # количество всех предикторов
 PREDICTOR_CNT = len(predictors)
 
