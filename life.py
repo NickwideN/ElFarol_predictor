@@ -24,7 +24,7 @@ def live_day(today):
 
 
 if __name__ == '__main__':
-    report = [in_bar_cnt for in_bar_cnt in range(MAN_CNT + 1)]
+    report = [0 for in_bar_cnt in range(MAN_CNT + 1)]
     for day in range(DAY_CNT):
         live_day(day)
         print("day:", day, "in_bar:", bar_attendance[day])
@@ -70,7 +70,7 @@ if __name__ == '__main__':
         fig = plt.figure()
         mpl.rcParams.update({'font.size': 10})
 
-        plt.title('Посещаемость')
+        plt.title("People : " + str(MAN_CNT) + "\nmax_good_attendance: " + str(MAX_MAN_CNT_WHEN_GOOD) + "\n CAN_PREDICTORS_CHANGE_CONDITION: " + str(CAN_PREDICTORS_CHANGE_CONDITION) + "\n PREDICTOR_IN_SET_CNT: " + str(PREDICTOR_IN_SET_CNT) + "\nARE_UNIQUE_PREDICTORS_IN_SET: " + str(ARE_UNIQUE_PREDICTORS_IN_SET))
 
         ax = plt.axes()
         ax.yaxis.grid(True, zorder=1)
