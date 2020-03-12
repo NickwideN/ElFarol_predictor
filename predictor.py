@@ -73,7 +73,7 @@ def condition_go(predictor_name, today, bar_attendance):
     else:
         func_name = "min"
     if pred_attr["days"] == "all":
-        return is_day_success(globals()[func_name](bar_attendance))
+        return is_day_success(globals()[func_name + "_"](bar_attendance))
     earliest_day = min(pred_attr["days"])
     if today >= -earliest_day:
         attendance_in_days = [bar_attendance[today + day] for day in pred_attr["days"]]

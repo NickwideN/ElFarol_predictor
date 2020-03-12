@@ -27,6 +27,11 @@
     "days": [-1, -2, -3, -4],
     "change_condition": true
   },
+  "total_average": {
+    "func": "average",
+    "days": "all",
+    "change_condition": true
+  },
   "min_2_days": {
     "func": "min",
     "days": [-1, -2],
