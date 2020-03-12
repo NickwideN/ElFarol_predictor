@@ -19,55 +19,55 @@
   },
   "average_2_days": {
     "func": "average",
-    "days": [-1, -2],
+    "days": [-1, -2]
   },
   "average_4_days": {
     "func": "average",
-    "days": [-1, -2, -3, -4],
+    "days": [-1, -2, -3, -4]
   },
   "total_average": {
     "func": "average",
-    "days": "all",
+    "days": "all"
   },
   "min_2_days": {
     "func": "min",
-    "days": [-1, -2],
+    "days": [-1, -2]
   },
   "min_3_days": {
     "func": "min",
-    "days": [-1, -2, -3],
+    "days": [-1, -2, -3]
   },
   "max_2_days": {
     "func": "max",
-    "days": [-1, -2],
+    "days": [-1, -2]
   },
   "max_3_days": {
     "func": "max",
-    "days": [-1, -2, -3],
+    "days": [-1, -2, -3]
   },
   "max_4_days": {
     "func": "max",
-    "days": [-1, -2, -3, -4],
+    "days": [-1, -2, -3, -4]
   },
   "mirror_1_day": {
     "func": "mirror_average",
-    "days": [-1],
+    "days": [-1]
   },
   "mirror_2_day": {
     "func": "mirror_average",
-    "days": [-1, -2],
+    "days": [-1, -2]
   },
   "mirror_3_day": {
     "func": "mirror_average",
-    "days": [-1, -2, -3],
+    "days": [-1, -2, -3]
   },
   "mirror_4_day": {
     "func": "mirror_average",
-    "days": [-1, -2, -3, -4],
+    "days": [-1, -2, -3, -4]
   },
   "median_1_day": {
     "func": "median",
-    "days": [-1],
+    "days": [-1]
   },
   "median_2_day": {
     "func": "median",
