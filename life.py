@@ -44,6 +44,7 @@ if __name__ == '__main__':
     if DRAW_PLOT_in_bar_cnt:
         dpi = 200
         fig = plt.figure()
+
         mpl.rcParams.update({'font.size': 10})
 
         plt.title('количество дней, когда в баре было in_bar_cnt человек')
@@ -67,7 +68,7 @@ if __name__ == '__main__':
 
     if DRAW_PLOT_attendance:
         dpi = 80
-        fig = plt.figure()
+        fig = plt.figure(figsize=(10, 6), dpi=80)
         mpl.rcParams.update({'font.size': 10})
 
         plt.title("People : " + str(MAN_CNT) + "\nmax_good_attendance: " + str(MAX_MAN_CNT_WHEN_GOOD) + "\n CAN_PREDICTORS_CHANGE_CONDITION: " + str(CAN_PREDICTORS_CHANGE_CONDITION) + "\n PREDICTOR_IN_SET_CNT: " + str(PREDICTOR_IN_SET_CNT) + "\nARE_UNIQUE_PREDICTORS_IN_SET: " + str(ARE_UNIQUE_PREDICTORS_IN_SET))
