@@ -2,13 +2,15 @@ from typing import Any, Dict
 
 from config import is_day_success, CAN_PREDICTORS_CHANGE_CONDITION, MAN_CNT
 import random
-import pyjson5
+import json
+import re
 
 # Набор использующихся предикторов
 predictors = []
 
 with open('predictors.json5', 'r') as f:
-    predictors_json = pyjson5.load(f)
+    json_str = re.search(r'\{[^qq]*\}\n\}', f.read()).group(0)
+    predictors_json = json.loads(json_str)
 
 
 class Predictor:
