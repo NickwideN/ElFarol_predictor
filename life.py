@@ -5,6 +5,7 @@ from predictor import Predictor, predictors, upload_predictors_in_life
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import output
+import check_config
 
 
 def live_day(today, people, bar_attendance):
@@ -22,6 +23,7 @@ def live_day(today, people, bar_attendance):
 
 if __name__ == '__main__':
     upload_predictors_in_life()
+    check_config.check_config_parameters()
     bar_attendance = []
     people = [Man(i) for i in range(MAN_CNT)]
     for day in range(DAY_CNT):
