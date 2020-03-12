@@ -5,7 +5,7 @@
 Так же может принимать значение "all", что означает, что надо использовать все дни
 2. func -- функция, которая будет работать с днями из days.
 Если в days только один день, func можно не записывать.
-Принимаемые значения: "min", "max", "average", "mirror_average"
+Принимаемые значения: "min", "max", "average", "mirror_average", "median"
 3. change_condition -- true или false. По умолчанию true.
 Указывает, может ли предиктор менять решение идти или не идти в бар.
 4. use -- использовать ли предиктор. По умолчанию True
@@ -20,57 +20,66 @@
   "average_2_days": {
     "func": "average",
     "days": [-1, -2],
-    "change_condition": true
   },
   "average_4_days": {
     "func": "average",
     "days": [-1, -2, -3, -4],
-    "change_condition": true
   },
   "total_average": {
     "func": "average",
     "days": "all",
-    "change_condition": true
   },
   "min_2_days": {
     "func": "min",
     "days": [-1, -2],
-    "change_condition": true
   },
   "min_3_days": {
     "func": "min",
     "days": [-1, -2, -3],
-    "change_condition": true
   },
   "max_2_days": {
     "func": "max",
     "days": [-1, -2],
-    "change_condition": true
   },
   "max_3_days": {
     "func": "max",
     "days": [-1, -2, -3],
-    "change_condition": true
   },
   "max_4_days": {
     "func": "max",
     "days": [-1, -2, -3, -4],
-    "change_condition": true
   },
   "mirror_1_day": {
     "func": "mirror_average",
     "days": [-1],
-    "change_condition": true
   },
   "mirror_2_day": {
     "func": "mirror_average",
     "days": [-1, -2],
-    "change_condition": true
   },
   "mirror_3_day": {
     "func": "mirror_average",
     "days": [-1, -2, -3],
-    "change_condition": true
+  },
+  "mirror_4_day": {
+    "func": "mirror_average",
+    "days": [-1, -2, -3, -4],
+  },
+  "median_1_day": {
+    "func": "median",
+    "days": [-1],
+  },
+  "median_2_day": {
+    "func": "median",
+    "days": [-1, -2]
+  },
+  "median_3_day": {
+    "func": "median",
+    "days": [-1, -2, -3]
+  },
+  "median_4_day": {
+    "func": "median",
+    "days": [-1, -2, -3, -4]
   }
 }
 

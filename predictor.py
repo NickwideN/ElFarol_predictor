@@ -49,20 +49,28 @@ def upload_predictors_in_life():
 
 
 # функции для condition
-def min_(attendance_in_days):
-    return min(attendance_in_days)
+def min_(attendance):
+    return min(attendance)
 
 
-def max_(attendance_in_days):
-    return max(attendance_in_days)
+def max_(attendance):
+    return max(attendance)
 
 
-def average_(attendance_in_days):
-    return sum(attendance_in_days) / len(attendance_in_days)
+def average_(attendance):
+    return sum(attendance) / len(attendance)
 
 
-def mirror_average_(attendance_in_days):
-    return MAN_CNT - average_(attendance_in_days)
+def mirror_average_(attendance):
+    return MAN_CNT - average_(attendance)
+
+
+def median_(attendance):
+    attendance = sorted(attendance)
+    if len(attendance) % 2 == 1:
+        return attendance[len(attendance) // 2]
+    else:
+        return 0.5 * (attendance[len(attendance) // 2 - 1] + attendance[len(attendance) // 2])
 
 
 def condition_go(predictor_name, today, bar_attendance):
@@ -78,4 +86,4 @@ def condition_go(predictor_name, today, bar_attendance):
     if today >= -earliest_day:
         attendance_in_days = [bar_attendance[today + day] for day in pred_attr["days"]]
         return is_day_success(globals()[func_name + "_"](attendance_in_days))
-    return random.randint(0, 1)
+    return True
