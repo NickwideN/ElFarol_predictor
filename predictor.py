@@ -8,7 +8,7 @@ import re
 # Набор использующихся предикторов
 predictors = []
 
-with open('predictors.json5', 'r') as f:
+with open('predictors.json5', 'r', encoding="utf8") as f:
     json_str = re.search(r'\{[^qq]*\}\n\}', f.read()).group(0)
     predictors_json = json.loads(json_str)
 
