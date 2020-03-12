@@ -4,16 +4,13 @@ from config import *
 from predictor import predictors, condition_go
 import random
 
-# количество всех предикторов
-PREDICTOR_CNT = len(predictors)
-
 
 class PredictorInSet:
     def __init__(self):
         """
         Предиктор в наборе предикторов человека
         """
-        predictor_id = random.randint(0, PREDICTOR_CNT - 1)
+        predictor_id = random.randint(0, len(predictors) - 1)
         self.predictor = predictors[predictor_id]
         # количество успехов
         self.__success_cnt = 0

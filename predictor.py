@@ -38,11 +38,14 @@ class Predictor:
             self.__success_cnt += 1
 
 
-for pred_name, pred_attr in predictors_json.items():
-    pred_obj = Predictor()
-    pred_obj.name = pred_name
-    if "change_condition" in pred_attr:
-        pred_obj.can_change_condition = pred_attr["change_condition"]
+def upload_predictors_in_life():
+    for pred_name, pred_attr in predictors_json.items():
+        if "use" in pred_attr and not pred_attr["use"]:
+            continue
+        pred_obj = Predictor()
+        pred_obj.name = pred_name
+        if "change_condition" in pred_attr:
+            pred_obj.can_change_condition = pred_attr["change_condition"]
 
 
 # функции для condition
@@ -76,5 +79,3 @@ def condition_go(predictor_name, today, bar_attendance):
         attendance_in_days = [bar_attendance[today + day] for day in pred_attr["days"]]
         return is_day_success(globals()[func_name + "_"](attendance_in_days))
     return random.randint(0, 1)
-
-

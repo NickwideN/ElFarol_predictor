@@ -1,16 +1,12 @@
 from typing import Set
 from man import Man
 from config import *
-from predictor import Predictor, predictors
+from predictor import Predictor, predictors, upload_predictors_in_life
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-people = [Man(i) for i in range(MAN_CNT)]
 
-bar_attendance = []
-
-
-def live_day(today):
+def live_day(today, people, bar_attendance):
     bar_attendance.append(0)
     for man in people:
         if man.decide_go(today, bar_attendance):
@@ -24,9 +20,15 @@ def live_day(today):
 
 
 if __name__ == '__main__':
+    upload_predictors_in_life()
+    bar_attendance = []
+    people = [Man(i) for i in range(MAN_CNT)]
+    for day in range(DAY_CNT):
+        live_day(day, people, bar_attendance)
+
+    # output
     report = [0 for in_bar_cnt in range(MAN_CNT + 1)]
     for day in range(DAY_CNT):
-        live_day(day)
         print("day:", day, "in_bar:", bar_attendance[day])
         # for man in people:
         #     print(man)
