@@ -60,6 +60,8 @@ if __name__ == '__main__':
         ax.set_xlabel('in_bar_cnt')
         ax.set_ylabel('Количество дней')
 
+
+
         plt.bar([in_bar_cnt for in_bar_cnt in sorted(report)], [report[in_bar_cnt] for in_bar_cnt in sorted(report)],
                 width=0.2, color='blue', alpha=0.7, label='in_bar_cnt',
                 zorder=2)
@@ -80,9 +82,6 @@ if __name__ == '__main__':
 
         plt.title("People : " + str(MAN_CNT) + "\nmax_good_attendance: " + str(MAX_MAN_CNT_WHEN_GOOD) + "\n CAN_PREDICTORS_CHANGE_CONDITION: " + str(CAN_PREDICTORS_CHANGE_CONDITION) + "\n PREDICTOR_IN_SET_CNT: " + str(PREDICTOR_IN_SET_CNT) + "\nARE_UNIQUE_PREDICTORS_IN_SET: " + str(ARE_UNIQUE_PREDICTORS_IN_SET))
 
-        x1, y1 = [0, DAY_CNT], [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD]
-        plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
-
         ax = plt.axes()
         ax.yaxis.grid(True, zorder=1)
 
@@ -90,7 +89,12 @@ if __name__ == '__main__':
         ax.set_xlabel('День')
         ax.set_ylabel('Количество в баре')
 
-        plt.plot([day for day in range(len(bar_attendance))], bar_attendance, color='blue', alpha=0.7, label='in_bar_cnt')
+        average_attendance = sum(bar_attendance) / DAY_CNT
+
+        plt.plot([day for day in range(len(bar_attendance))], bar_attendance, color='blue', alpha=0.7, label='in_bar_cnt. average=' + str(average_attendance))
+
+        x1, y1 = [0, DAY_CNT], [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD]
+        plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
 
         fig.autofmt_xdate(rotation=25)
 
