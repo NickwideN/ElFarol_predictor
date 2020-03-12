@@ -62,6 +62,9 @@ if __name__ == '__main__':
         ax.set_xlabel('in_bar_cnt')
         ax.set_ylabel('Количество дней')
 
+        x1, y1 = [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD], [0, max(report.values())]
+        plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
+
         x = []
         y = []
         for in_bar_cnt in report:
@@ -71,9 +74,6 @@ if __name__ == '__main__':
         plt.bar(x, y,
                 width=0.3, color='blue', alpha=0.7, label='in_bar_cnt',
                 zorder=2)
-
-        x1, y1 = [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD], [0, max(report.values())]
-        plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
 
         fig.autofmt_xdate(rotation=25)
 
