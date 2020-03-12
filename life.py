@@ -27,16 +27,18 @@ if __name__ == '__main__':
         live_day(day, people, bar_attendance)
 
     # output
-    report = [0 for in_bar_cnt in range(MAN_CNT + 1)]
+    report = {}
     for day in range(DAY_CNT):
         print("day:", day, "in_bar:", bar_attendance[day])
         # for man in people:
         #     print(man)
+        if bar_attendance[day] not in report:
+            report[bar_attendance[day]] = 0
         report[bar_attendance[day]] += 1
         print("#########################################")
     print()
     print("колчество дней, когда в баре было in_bar_cnt человек")
-    for in_bar_cnt in range(len(report)):
+    for in_bar_cnt in sorted(report):
         print("in_bar_cnt:", in_bar_cnt, "day_cnt:", report[in_bar_cnt])
     print()
     print("predictors")
@@ -58,9 +60,12 @@ if __name__ == '__main__':
         ax.set_xlabel('in_bar_cnt')
         ax.set_ylabel('Количество дней')
 
-        plt.bar([in_bar_cnt for in_bar_cnt in range(len(report))], [report[in_bar_cnt] for in_bar_cnt in range(len(report))],
+        plt.bar([in_bar_cnt for in_bar_cnt in sorted(report)], [report[in_bar_cnt] for in_bar_cnt in sorted(report)],
                 width=0.2, color='blue', alpha=0.7, label='in_bar_cnt',
                 zorder=2)
+
+        x1, y1 = [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD], [0, max(report.values())]
+        plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
 
         fig.autofmt_xdate(rotation=25)
 
@@ -74,6 +79,9 @@ if __name__ == '__main__':
         mpl.rcParams.update({'font.size': 10})
 
         plt.title("People : " + str(MAN_CNT) + "\nmax_good_attendance: " + str(MAX_MAN_CNT_WHEN_GOOD) + "\n CAN_PREDICTORS_CHANGE_CONDITION: " + str(CAN_PREDICTORS_CHANGE_CONDITION) + "\n PREDICTOR_IN_SET_CNT: " + str(PREDICTOR_IN_SET_CNT) + "\nARE_UNIQUE_PREDICTORS_IN_SET: " + str(ARE_UNIQUE_PREDICTORS_IN_SET))
+
+        x1, y1 = [0, DAY_CNT], [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD]
+        plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
 
         ax = plt.axes()
         ax.yaxis.grid(True, zorder=1)
