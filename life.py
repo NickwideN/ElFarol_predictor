@@ -26,6 +26,7 @@ if __name__ == '__main__':
     check_config.check_config_parameters()
     bar_attendance = []
     people = [Man(i) for i in range(MAN_CNT)]
+    output.print_predictor_cnt()
     for day in range(DAY_CNT):
         output.print_progress(day, DAY_CNT)
         live_day(day, people, bar_attendance)
