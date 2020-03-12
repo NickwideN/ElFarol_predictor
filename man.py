@@ -1,12 +1,8 @@
 from typing import List, Set
 
 from config import *
-from predictor import predictors
+from predictor import predictors, condition_go
 import random
-
-
-# количество всех предикторов
-PREDICTOR_CNT = len(predictors)
 
 
 class PredictorInSet:
@@ -14,7 +10,7 @@ class PredictorInSet:
         """
         Предиктор в наборе предикторов человека
         """
-        predictor_id = random.randint(0, PREDICTOR_CNT - 1)
+        predictor_id = random.randint(0, len(predictors) - 1)
         self.predictor = predictors[predictor_id]
         # количество успехов
         self.__success_cnt = 0
@@ -25,7 +21,7 @@ class PredictorInSet:
 
     def analyze_day(self, today, bar_attendance):
         self.__active_cnt += 1
-        if is_day_success(bar_attendance[today]) == self.predictor.condition_go(today, bar_attendance):
+        if is_day_success(bar_attendance[today]) == condition_go(self.predictor.name, today, bar_attendance):
             self.__success_cnt += 1
             self.__day_cnt_with_percent_under_min = 0
         elif self.__success_cnt / self.__active_cnt < MIN_PERCENT_SUCCESS_FOR_PredictorInSet:

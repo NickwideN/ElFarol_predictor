@@ -11,11 +11,11 @@
 """
 
 # Количество человек в городе
-MAN_CNT = 100
+MAN_CNT = 200
 # максимальное количество человек в баре, когда там еще хорошо
-MAX_MAN_CNT_WHEN_GOOD = 40
+MAX_MAN_CNT_WHEN_GOOD = 120
 # Количество дней существования бара
-DAY_CNT = 1000
+DAY_CNT = 400
 
 ###### man config ######
 """
@@ -32,14 +32,14 @@ DAY_CNT = 1000
 Если в течении MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN дней процент успешных дней меньше чем MIN_PERCENT_SUCCESS_FOR_PredictorInSet, то PredictorInSet заменяется на новый случайный.
 """
 # количество предикторов в наборе предикторов человека
-PREDICTOR_IN_SET_CNT = 2
+PREDICTOR_IN_SET_CNT = 7
 # предикторы в наборе предикторов уникальны?
-ARE_UNIQUE_PREDICTORS_IN_SET = False
+ARE_UNIQUE_PREDICTORS_IN_SET = True
 
 # минимальный процент успешных дней для PredictorInSet
 MIN_PERCENT_SUCCESS_FOR_PredictorInSet = 0.6
 # Максимальное количество дней подряд с процентом ниже минимального для PredictorInSet
-MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN = 3
+MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN = 4
 
 ###### predictor config ######
 """
@@ -52,15 +52,16 @@ name -- имя предиктора
 Будем называть такие дни успешними для предикатора.
 Если CAN_PREDICTORS_CHANGE_CONDITION == True, 
     то если процент успешных дней по отношению к дням, когда предиктор что-то решал, больше 50%, 
-        то decide_go вернет вырнет True, если выполняется condition
+        то decide_go вернет True, если выполняется condition
             в противном случае вернет True, если condition не выполняется
 """
-# Может ли предиктор менять значение своего условия на противоположное
+# Может ли предикторы менять значение своего условия на противоположное
+# положение True не гарантирует включение параметра у всех предикторов
 CAN_PREDICTORS_CHANGE_CONDITION = False
 
 ###### output config ######
 # рисовать диаграмму количество дней, когда пришло in_bar_cnt людей в этот день
-DRAW_PLOT_in_bar_cnt = False
+DRAW_PLOT_in_bar_cnt = True
 # рисовать график посещаемости
 DRAW_PLOT_attendance = True
 

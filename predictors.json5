@@ -1,0 +1,114 @@
+/*
+Список предикторов. Каждый предиктор имеет параметры:
+1. days -- дни, на которые опирается предиктор.
+Например [-1, -3] -- предыдущий день и день 3 дня назад.
+Так же может принимать значение "all", что означает, что надо использовать все дни
+2. func -- функция, которая будет работать с днями из days.
+Если в days только один день, func можно не записывать.
+Принимаемые значения: "min", "max", "average", "mirror_average", "median"
+3. change_condition -- true или false. По умолчанию true.
+Указывает, может ли предиктор менять решение идти или не идти в бар.
+4. use -- использовать ли предиктор. По умолчанию True
+*/
+{
+  "prev_day": {
+    "days": [-1]
+  },
+  "prev_prev_day": {
+    "days": [-2]
+  },
+  "average_2_days": {
+    "func": "average",
+    "days": [-1, -2],
+  },
+  "average_4_days": {
+    "func": "average",
+    "days": [-1, -2, -3, -4],
+  },
+  "total_average": {
+    "func": "average",
+    "days": "all",
+  },
+  "min_2_days": {
+    "func": "min",
+    "days": [-1, -2],
+  },
+  "min_3_days": {
+    "func": "min",
+    "days": [-1, -2, -3],
+  },
+  "max_2_days": {
+    "func": "max",
+    "days": [-1, -2],
+  },
+  "max_3_days": {
+    "func": "max",
+    "days": [-1, -2, -3],
+  },
+  "max_4_days": {
+    "func": "max",
+    "days": [-1, -2, -3, -4],
+  },
+  "mirror_1_day": {
+    "func": "mirror_average",
+    "days": [-1],
+  },
+  "mirror_2_day": {
+    "func": "mirror_average",
+    "days": [-1, -2],
+  },
+  "mirror_3_day": {
+    "func": "mirror_average",
+    "days": [-1, -2, -3],
+  },
+  "mirror_4_day": {
+    "func": "mirror_average",
+    "days": [-1, -2, -3, -4],
+  },
+  "median_1_day": {
+    "func": "median",
+    "days": [-1],
+  },
+  "median_2_day": {
+    "func": "median",
+    "days": [-1, -2]
+  },
+  "median_3_day": {
+    "func": "median",
+    "days": [-1, -2, -3]
+  },
+  "median_4_day": {
+    "func": "median",
+    "days": [-1, -2, -3, -4]
+  }
+}
+
+//Стратегии на будушее
+//four_weeks {'value': 1, 'score': 0}
+//last_week {'value': 4, 'score': 0}
+//median {'value': 4, 'score': 0}
+//median_high {'value': 4, 'score': 0}
+//median_low {'value': 4, 'score': 0}
+//min_attendance {'value': 0, 'score': 0}
+//min_month_attendance {'value': 1, 'score': 0}
+//min_three_month {'value': 0, 'score': 0}
+//min_two_month {'value': 1, 'score': 0}
+//mirror_four_weeks {'value': 9, 'score': 1}
+//mirror_last_week {'value': 6, 'score': 1}
+//mirror_month_average {'value': 5, 'score': 0}
+//mirror_three_month_average {'value': 7, 'score': 1}
+//mirror_three_weeks {'value': 3, 'score': 0}
+//mirror_two_month_average {'value': 5, 'score': 0}
+//mirror_two_weeks {'value': 1, 'score': 0}
+//mode {'value': 7, 'score': 1}
+//month_average {'value': 5, 'score': 0}
+//month_trend {'value': 5, 'score': 0}
+//random_attendance {'value': 'random', 'score': 0}
+//three_month_average {'value': 4, 'score': 0}
+//three_month_trend {'value': 4, 'score': 0}
+//three_week_average {'value': 6, 'score': 1}
+//three_weeks {'value': 7, 'score': 1}
+//total_average {'value': 4, 'score': 0}
+//two_month_average {'value': 5, 'score': 0}
+//two_month_trend {'value': 4, 'score': 0}
+//two_weeks {'value': 9, 'score': 1}

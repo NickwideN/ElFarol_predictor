@@ -1,14 +1,20 @@
-from config import is_day_success, MAX_MAN_CNT_WHEN_GOOD, DAY_CNT, CAN_PREDICTORS_CHANGE_CONDITION
-import random
+from typing import Any, Dict
 
+from config import is_day_success, CAN_PREDICTORS_CHANGE_CONDITION, MAN_CNT
+import random
+import pyjson5
+
+# Набор использующихся предикторов
 predictors = []
+
+with open('predictors.json5', 'r') as f:
+    predictors_json = pyjson5.load(f)
 
 
 class Predictor:
     def __init__(self):
         self.__success_cnt = 0
         self.__active_cnt = 0
-        # давать имя предикатору обязательно, так как на нем основано хеширование
         self.name = ''
         self.can_change_condition = True
         predictors.append(self)
@@ -22,115 +28,62 @@ class Predictor:
         """
         if not self.can_change_condition or not CAN_PREDICTORS_CHANGE_CONDITION or \
                 (self.__active_cnt and self.__success_cnt / self.__active_cnt > 0.5):
-            return self.condition_go(today, bar_attendance)
+            return condition_go(self.name, today, bar_attendance)
         else:
-            return not self.condition_go(today, bar_attendance)
+            return not condition_go(self.name, today, bar_attendance)
 
     def analyze_day(self, today, bar_attendance):
         self.__active_cnt += 1
-        if is_day_success(bar_attendance[today]) == self.condition_go(today, bar_attendance):
+        if is_day_success(bar_attendance[today]) == condition_go(self.name, today, bar_attendance):
             self.__success_cnt += 1
 
-    def condition_go(self, today, bar_attendance):
-        pass
+
+def upload_predictors_in_life():
+    for pred_name, pred_attr in predictors_json.items():
+        if "use" in pred_attr and not pred_attr["use"]:
+            continue
+        pred_obj = Predictor()
+        pred_obj.name = pred_name
+        if "change_condition" in pred_attr:
+            pred_obj.can_change_condition = pred_attr["change_condition"]
 
 
-########################################################################################################
-########################################################################################################
-
-prev_day = Predictor()
-
-
-def condition_go(today, bar_attendance):
-    if today >= 1:
-        return is_day_success(bar_attendance[today - 1])
-    return random.randint(0, 1)
+# функции для condition
+def min_(attendance):
+    return min(attendance)
 
 
-prev_day.condition_go = condition_go
-prev_day.name = "prev_day"
-
-########################################################################################################
-
-prev_prev_day = Predictor()
+def max_(attendance):
+    return max(attendance)
 
 
-def condition_go(today, bar_attendance):
-    if today >= 2:
-        return is_day_success(bar_attendance[today - 2])
-    return random.randint(0, 1)
+def average_(attendance):
+    return sum(attendance) / len(attendance)
 
 
-prev_prev_day.condition_go = condition_go
-prev_prev_day.name = "prev_prev_day"
-
-########################################################################################################
-
-average_3_last_days = Predictor()
+def mirror_average_(attendance):
+    return MAN_CNT - average_(attendance)
 
 
-def condition_go(today, bar_attendance):
-    if today >= 3:
-        return is_day_success(sum(bar_attendance[today - 3:today]) / 3)
-    return random.randint(0, 1)
+def median_(attendance):
+    attendance = sorted(attendance)
+    if len(attendance) % 2 == 1:
+        return attendance[len(attendance) // 2]
+    else:
+        return 0.5 * (attendance[len(attendance) // 2 - 1] + attendance[len(attendance) // 2])
 
 
-average_3_last_days.condition_go = condition_go
-average_3_last_days.name = "average_3_last_days"
-
-########################################################################################################
-
-average_4_last_days = Predictor()
-
-
-def condition_go(today, bar_attendance):
-    if today >= 4:
-        return is_day_success(sum(bar_attendance[today - 4:today]) / 4)
-    return random.randint(0, 1)
-
-
-average_4_last_days.condition_go = condition_go
-average_4_last_days.name = "average_4_last_days"
-
-########################################################################################################
-
-average_5_last_days = Predictor()
-
-
-def condition_go(today, bar_attendance):
-    if today >= 5:
-        return is_day_success(sum(bar_attendance[today - 5:today]) / 5)
-    return random.randint(0, 1)
-
-
-average_5_last_days.condition_go = condition_go
-average_5_last_days.name = "average_5_last_days"
-
-########################################################################################################
-
-average_6_last_days = Predictor()
-
-
-def condition_go(today, bar_attendance):
-    if today >= 6:
-        return is_day_success(sum(bar_attendance[today - 6:today]) / 6)
-    return random.randint(0, 1)
-
-
-average_6_last_days.condition_go = condition_go
-average_6_last_days.name = "average_6_last_days"
-
-########################################################################################################
-
-# for i in range(2, DAY_CNT):
-#     average_last_days = Predictor()
-#
-#
-#     def condition_go(today, bar_attendance):
-#         last_day_cnt = random.randint(2, DAY_CNT)
-#         if today >= last_day_cnt:
-#             return is_day_success(sum(bar_attendance[today - last_day_cnt:today]) / last_day_cnt)
-#         return True
-#
-#
-#     average_last_days.condition_go = condition_go
+def condition_go(predictor_name, today, bar_attendance):
+    # тут len(bar_attendance) = today
+    pred_attr: Dict[str, Any] = predictors_json[predictor_name]
+    if "func" in pred_attr:
+        func_name = pred_attr["func"]
+    else:
+        func_name = "min"
+    if pred_attr["days"] == "all":
+        return is_day_success(globals()[func_name + "_"](bar_attendance))
+    earliest_day = min(pred_attr["days"])
+    if today >= -earliest_day:
+        attendance_in_days = [bar_attendance[today + day] for day in pred_attr["days"]]
+        return is_day_success(globals()[func_name + "_"](attendance_in_days))
+    return True
