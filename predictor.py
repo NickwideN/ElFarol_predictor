@@ -18,11 +18,11 @@ class Predictor:
         self.__success_cnt = 0
         self.__active_cnt = 0
         self.name = ''
-        self.can_change_condition = True
+        self.can_change_condition = False
         predictors.append(self)
 
     def __repr__(self):
-        return self.name + ":\t\t\t" + str(self.__success_cnt) + " " + str(self.__active_cnt)
+        return self.name + ":\t\t\t" + str(self.__success_cnt) + " " + str(self.__active_cnt) + " " + str(100 * self.__success_cnt // self.__active_cnt) + "%"
 
     def decide_go(self, today, bar_attendance):
         """

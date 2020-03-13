@@ -6,13 +6,14 @@
 2. func -- функция, которая будет работать с днями из days.
 Если в days только один день, func можно не записывать.
 Принимаемые значения: "min", "max", "average", "mirror_average", "median"
-3. change_condition -- true или false. По умолчанию true.
+3. change_condition -- true или false. По умолчанию false.
 Указывает, может ли предиктор менять решение идти или не идти в бар.
 4. use -- использовать ли предиктор. По умолчанию True
 */
 {
   "prev_day": {
-    "days": [-1]
+    "days": [-1],
+    "change_condition": true
   },
   "prev_prev_day": {
     "days": [-2]
