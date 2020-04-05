@@ -50,6 +50,10 @@
     "func": "max",
     "days": [-1, -2, -3, -4]
   },
+  "max_all_days": {
+    "func": "max",
+    "days": "all"
+  },
   "mirror_1_day": {
     "func": "mirror_average",
     "days": [-1]
@@ -66,6 +70,10 @@
     "func": "mirror_average",
     "days": [-1, -2, -3, -4]
   },
+  "mirror_all_day": {
+    "func": "mirror_average",
+    "days": "all"
+  },
   "median_1_day": {
     "func": "median",
     "days": [-1]
@@ -81,6 +89,10 @@
   "median_4_day": {
     "func": "median",
     "days": [-1, -2, -3, -4]
+  },
+  "median_all_days": {
+    "func": "median",
+    "days": "all"
   }
 }
 
