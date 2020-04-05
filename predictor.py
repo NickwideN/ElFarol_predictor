@@ -1,7 +1,6 @@
 from typing import Any, Dict
 
-from config import is_day_success, CAN_PREDICTORS_CHANGE_CONDITION, MAN_CNT
-import random
+from config import is_day_success, CAN_PREDICTORS_CHANGE_CONDITION, MAN_CNT, MIN_PERCENT_WHEN_MAN_BELIEVE
 import json
 import re
 
@@ -29,7 +28,7 @@ class Predictor:
         принять решение, идти или не идти в бар
         """
         if not self.can_change_condition or not CAN_PREDICTORS_CHANGE_CONDITION or \
-                (self.__active_cnt and self.__success_cnt / self.__active_cnt > 0.5):
+                (self.__active_cnt and self.__success_cnt / self.__active_cnt > MIN_PERCENT_WHEN_MAN_BELIEVE):
             return condition_go(self.name, today, bar_attendance)
         else:
             return not condition_go(self.name, today, bar_attendance)
