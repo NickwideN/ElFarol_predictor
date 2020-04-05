@@ -13,7 +13,7 @@
 {
   "prev_day": {
     "days": [-1],
-    "change_condition": false
+    "change_condition": true
   },
   "prev_prev_day": {
     "days": [-2]
@@ -32,8 +32,7 @@
   },
   "min_2_days": {
     "func": "min",
-    "days": [-1, -2],
-    "change_condition": false
+    "days": [-1, -2]
   },
   "min_3_days": {
     "func": "min",
