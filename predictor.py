@@ -8,6 +8,7 @@ import re
 predictors = []
 
 with open('predictors.json5', 'r', encoding="utf8") as f:
+    # Делаем из json5 обычный json (убираем комментарии)
     json_str = re.search(r'\{[^qq]*\}\n\}', f.read()).group(0)
     predictors_json = json.loads(json_str)
 
@@ -21,7 +22,7 @@ class Predictor:
         predictors.append(self)
 
     def __repr__(self):
-        return self.name + ":\t\t\t" + str(self.__success_cnt) + " " + str(self.__active_cnt) + " " + str(100 * self.__success_cnt // self.__active_cnt) + "%"
+        return self.name
 
     def decide_go(self, today, bar_attendance):
         """
@@ -37,6 +38,15 @@ class Predictor:
         self.__active_cnt += 1
         if is_day_success(bar_attendance[today]) == condition_go(self.name, today, bar_attendance):
             self.__success_cnt += 1
+
+    def success_cnt(self):
+        return self.__success_cnt
+
+    def active_cnt(self):
+        return self.__active_cnt
+
+    def persent_seccess(self):
+        return (self.success_cnt() / self.active_cnt()) if self.active_cnt() else 0
 
 
 def upload_predictors_in_life():

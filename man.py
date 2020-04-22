@@ -36,6 +36,7 @@ class PredictorInSet:
         """
         self.__init__()
 
+    # следующие функции нужны для уникальности предикторов в наборе
     def __eq__(self, other):
         return self.predictor == other.predictor
 

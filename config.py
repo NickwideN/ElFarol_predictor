@@ -15,8 +15,8 @@ MAN_CNT = 200
 # максимальное количество человек в баре, когда там еще хорошо
 MAX_MAN_CNT_WHEN_GOOD = 120
 # Количество дней существования бара
-DAY_CNT = 500
-# Минимальный процент дней, успешных для предиктора, при которых человек будет верить предиктору
+DAY_CNT = 300
+# Минимальный процент дней, успешных для предиктора, при которых человек будет верить предиктору (Работает при CAN_PREDICTORS_CHANGE_CONDITION=True)
 MIN_PERCENT_WHEN_MAN_BELIEVE = 0.5
 
 ###### man config ######
@@ -41,7 +41,7 @@ ARE_UNIQUE_PREDICTORS_IN_SET = True
 # минимальный процент успешных дней для PredictorInSet
 MIN_PERCENT_SUCCESS_FOR_PredictorInSet = 0.6
 # Максимальное количество дней подряд с процентом ниже минимального для PredictorInSet
-MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN = 4
+MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN = 3
 
 ###### predictor config ######
 """
@@ -62,10 +62,12 @@ name -- имя предиктора
 CAN_PREDICTORS_CHANGE_CONDITION = False
 
 ###### output config ######
-# рисовать диаграмму количество дней, когда пришло in_bar_cnt людей в этот день
+# рисовать диаграмму количество дней, когда пришло in_bar_cnt людей в этот день?
 DRAW_PLOT_in_bar_cnt = True
-# рисовать график посещаемости
+# рисовать график посещаемости?
 DRAW_PLOT_attendance = True
+# сортировать вывод предикторов? (True, False или 'both')
+SORT_PREDICTORS = 'both'
 
 
 def is_day_success(in_bar_cnt):
@@ -74,12 +76,13 @@ def is_day_success(in_bar_cnt):
     :param in_bar_cnt: int
     :return: bool
     """
-    return in_bar_cnt <= MAX_MAN_CNT_WHEN_GOOD
+    return in_bar_cnt <= MAX_MAN_CNT_WHEN_GOOD - (MAN_CNT - MAX_MAN_CNT_WHEN_GOOD) * 0.01
+
 
 """
 Больше про систему предикторов:
 
-У каждого предиктора есть условие, которое определяется параментрами func и days. Каждый день, когда условие предиктора выдает правильное решение (совпадающее с is_day_success в config.py), день считается успешным для предиктора.
+У каждого предиктора есть условие, которое определяется параментрами func и days. Каждый день, когда условие предиктора выдает правильное решение (совпадающееMAX_MAN_CNT_WHEN_GOOD с is_day_success в config.py), день считается успешным для предиктора.
 
 Сам же предиктор выдает либо значение своего условия, либо его отрицание в зависимости от процента успешных для предиктора дней.
 
