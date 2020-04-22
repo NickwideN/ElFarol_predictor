@@ -24,7 +24,7 @@ class PredictorInSet:
         if is_day_success(bar_attendance[today]) == condition_go(self.predictor.name, today, bar_attendance):
             self.__success_cnt += 1
             self.__day_cnt_with_percent_under_min = 0
-        elif self.__success_cnt / self.__active_cnt < MIN_PERCENT_SUCCESS_FOR_PredictorInSet:
+        elif self.persent_success() < MIN_PERCENT_SUCCESS_FOR_PredictorInSet:
             self.__day_cnt_with_percent_under_min += 1
 
     def need_to_change(self):
@@ -45,6 +45,12 @@ class PredictorInSet:
 
     def __hash__(self):
         return hash(self.predictor.name)
+
+    def persent_success(self):
+        return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0
+
+    def get_str_state(self):
+        return "({},{:.0%},{})".format(self.__active_cnt, self.persent_success(), self.__day_cnt_with_percent_under_min)
 
 
 class Man:

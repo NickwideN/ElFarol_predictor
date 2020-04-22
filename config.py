@@ -62,10 +62,8 @@ name -- имя предиктора
 CAN_PREDICTORS_CHANGE_CONDITION = False
 
 ###### output config ######
-# рисовать диаграмму количество дней, когда пришло in_bar_cnt людей в этот день?
-DRAW_PLOT_in_bar_cnt = True
-# рисовать график посещаемости?
-DRAW_PLOT_attendance = True
+# рисовать графики?
+DRAW_PLOTS = True
 # сортировать вывод предикторов? (True, False или 'both')
 SORT_PREDICTORS = 'both'
 

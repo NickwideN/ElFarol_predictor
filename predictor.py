@@ -45,8 +45,8 @@ class Predictor:
     def active_cnt(self):
         return self.__active_cnt
 
-    def persent_seccess(self):
-        return (self.success_cnt() / self.active_cnt()) if self.active_cnt() else 0
+    def persent_success(self):
+        return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0
 
 
 def upload_predictors_in_life():

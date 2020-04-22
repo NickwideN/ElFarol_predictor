@@ -51,68 +51,159 @@ def print_predictors(predictors):
     process_name = 'Неотсортированы:'
     if SORT_PREDICTORS:
         process_name = 'Отсортированы по проценту успешных дней:'
-        processed_predictors = sorted(predictors, key=lambda predictor: predictor.persent_seccess())
+        processed_predictors = sorted(predictors, key=lambda predictor: predictor.persent_success())
     print(process_name)
     for pr in processed_predictors:
-        print(format_str.format(pr.name, pr.success_cnt(), pr.active_cnt(), pr.persent_seccess()))
+        print(format_str.format(pr.name, pr.success_cnt(), pr.active_cnt(), pr.persent_success()))
     if SORT_PREDICTORS == 'both':
         print('Неотсортированы:')
         for pr in predictors:
-            print(format_str.format(pr.name, pr.success_cnt(), pr.active_cnt(), pr.persent_seccess()))
+            print(format_str.format(pr.name, pr.success_cnt(), pr.active_cnt(), pr.persent_success()))
 
 
-def draw_plot_in_bar_cnt(day_cnt_in_bar_cnt_map):
-    fig = plt.figure()
+def apply_bar_attendance_plot(ax, bar_attendance, drawing_3_plots=False, **kwargs):
+    ax.set_title("График посещаемости бара")
+    ax.set_xlabel('День')
+    ax.set_ylabel('Количество человек в баре')
 
-    mpl.rcParams.update({'font.size': 10})
+    average_attendance = round(sum(bar_attendance) / DAY_CNT, 2)
 
-    plt.title('количество дней, когда в баре было in_bar_cnt человек')
+    # рисуем линию, к которой надо стремиться
+    x, y = [0, DAY_CNT], [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD]
+    ax.plot(x, y, color='red', label="Лимит бара: " + str(MAX_MAN_CNT_WHEN_GOOD))
 
-    ax = plt.axes()
-    ax.yaxis.grid(True, zorder=1)
+    # рисуем границы области
+    if len(bar_attendance) > 80:
+        upper_limit = max(bar_attendance[-20:])
+        x, y = [0, DAY_CNT], [upper_limit, upper_limit]
+        ax.plot(x, y, color='green', label="Верхняя граница области: " + str(upper_limit))
+        lower_limit = min(bar_attendance[-20:])
+        x, y = [0, DAY_CNT], [lower_limit, lower_limit]
+        ax.plot(x, y, color='green', label="Нижняя граница области: " + str(lower_limit))
 
-    #  Добавляем подписи к осям:
-    ax.set_xlabel('in_bar_cnt')
+    # рисуем основной график
+    ax.plot(
+        [day for day in range(len(bar_attendance))],
+        bar_attendance,
+        color='blue',
+        linewidth=1,
+        label='Среднее: ' + str(average_attendance)
+    )
+
+    ax.grid(which='major', axis='y', linestyle='-')
+    ax.minorticks_on()
+    if not drawing_3_plots:
+        ax.legend()
+
+
+def apply_in_bar_cnt_plot(ax, in_bar_cnt_day_cnt_map, drawing_3_plots=False, **kwargs):
+    if drawing_3_plots:
+        ax.set_title("График зависимости количества дней\nот числа человек в баре в этот день")
+    else:
+        ax.set_title("График зависимости количества дней от числа человек в баре в этот день")
+    ax.set_xlabel('Количество человек в баре')
     ax.set_ylabel('Количество дней')
-
-    x1, y1 = [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD], [0, max(day_cnt_in_bar_cnt_map.values())]
-    plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
 
     x = []
     y = []
-    for in_bar_cnt in day_cnt_in_bar_cnt_map:
+    for in_bar_cnt in in_bar_cnt_day_cnt_map:
         x.append(in_bar_cnt)
-        y.append(day_cnt_in_bar_cnt_map[in_bar_cnt])
+        y.append(in_bar_cnt_day_cnt_map[in_bar_cnt])
 
-    plt.bar(x, y,
-            width=0.3, color='blue', alpha=0.7, label='in_bar_cnt',
-            zorder=2)
+    # рисуем основной график
+    ax.bar(
+        x, y,
+        width=0.3, color='blue', alpha=0.7, label='in_bar_cnt',
+        zorder=2
+    )
 
-    fig.autofmt_xdate(rotation=25)
+    # рисуем линию, к которой надо стремиться
+    x, y = [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD], [0, max(in_bar_cnt_day_cnt_map.values())]
+    ax.plot(x, y, color='red', label="Лимит бара: " + str(MAX_MAN_CNT_WHEN_GOOD))
+
+    # отметим 5 максимальных по значению точки
+    # выберем 5 самых наибольший посещаемостей
+    if not drawing_3_plots:
+        for in_bar_cnt in sorted(in_bar_cnt_day_cnt_map.keys(), key=lambda in_bar_cnt: in_bar_cnt_day_cnt_map[in_bar_cnt])[-5:]:
+            height = in_bar_cnt_day_cnt_map[in_bar_cnt]
+            ax.annotate('{}'.format(in_bar_cnt),
+                        xy=(in_bar_cnt, height),
+                        xytext=(0, 3),  # 3 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom')
+
+    ax.grid(which='both', axis='y', linestyle='-')
+    if not drawing_3_plots:
+        ax.legend()
+
+def apply_people_state_plot(ax, people, **kwargs):
+    ax.set_xlabel('Человек')
+    ax.set_ylabel('Предикторы')
+
+    annotate_kwargs = [dict(xytext=(0, 2),
+                            textcoords="offset points",
+                            ha='left', va='bottom', fontsize=9),
+                       dict(xytext=(0, -14),
+                        textcoords="offset points",
+                        ha='left', va='bottom', fontsize=9),
+                       dict(xytext=(0, -6),
+                        textcoords="offset points",
+                        ha='left', va='bottom', fontsize=9),
+                       dict(xytext=(0, -6),
+                        textcoords="offset points",
+                        ha='right', va='bottom', fontsize=9)]
+    annotate_kwargs += [dict(xytext=(0, 2),
+                        textcoords="offset points",
+                        ha='left', va='bottom', fontsize=9) for _ in range(20)]
+
+    for man in people:
+        x = [man.name for _ in man.predictor_set]
+        y = [predictor_in_set.predictor.name for predictor_in_set in man.predictor_set]
+        point_title = [predictor_in_set.get_str_state() for predictor_in_set in man.predictor_set]
+        ax.scatter(x, y, marker='o', color='blue')
+
+        annotated_points_cnt = {}
+        for i in range(len(point_title)):
+            if y[i] not in annotated_points_cnt:
+                annotated_points_cnt[y[i]] = 0
+            else:
+                annotated_points_cnt[y[i]] += 1
+            ax.annotate(point_title[i], xy=(x[i], y[i]), **annotate_kwargs[annotated_points_cnt[y[i]]])
+
+    ax.grid(which='major', axis='both', linestyle='--')
 
 
-def draw_plot_attendance(bar_attendance):
-    fig = plt.figure(figsize=(10, 5), dpi=200)
-    mpl.rcParams.update({'font.size': 10})
+def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None):
+    plot_data = []
+    if bar_attendance is not None:
+        plot_data.append(dict(data=bar_attendance, apply_plot_func=apply_bar_attendance_plot))
+    if in_bar_cnt_day_cnt_map is not None:
+        plot_data.append(dict(data=in_bar_cnt_day_cnt_map, apply_plot_func=apply_in_bar_cnt_plot))
+    if people is not None:
+        plot_data.append(dict(data=people, apply_plot_func=apply_people_state_plot))
 
-    plt.title("People : " + str(MAN_CNT) + "\nmax_good_attendance: " + str(MAX_MAN_CNT_WHEN_GOOD) + "\n CAN_PREDICTORS_CHANGE_CONDITION: " + str(CAN_PREDICTORS_CHANGE_CONDITION) + "\n PREDICTOR_IN_SET_CNT: " + str(PREDICTOR_IN_SET_CNT) + "\nARE_UNIQUE_PREDICTORS_IN_SET: " + str(ARE_UNIQUE_PREDICTORS_IN_SET))
+    if len(plot_data) == 3:
+        gridsize = (3, 3)
+        fig = plt.figure(figsize=(14, 10))
+        ax = [plt.subplot2grid(gridsize, (0, 1), colspan=1, rowspan=1),
+              plt.subplot2grid(gridsize, (0, 2), colspan=1, rowspan=1),
+              plt.subplot2grid(gridsize, (1, 0), colspan=3, rowspan=2)]
 
-    ax = plt.axes()
-    ax.yaxis.grid(True, zorder=1)
+        title = "Наборы предикторов у людей \n"
+        title += "День: " + str(len(bar_attendance) - 1)
+        fig.suptitle(title, x=0.04, horizontalalignment='left', fontsize=17)
+        fig.text(0.04, 0.8, "Числа у точек (для предиктора в наборе):\n(кол-во активаций,\n процент успешных дней (ПУТ),\nколичество дней подряд, когда\n ПУТ ниже допустимого минимального)", horizontalalignment='left', fontsize=12)
 
-    #  Добавляем подписи к осям:
-    ax.set_xlabel('День')
-    ax.set_ylabel('Количество в баре')
+    elif len(plot_data) == 2:
+        fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))
+    elif len(plot_data) == 1:
+        fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 6))
+        ax = [ax]
 
-    average_attendance = sum(bar_attendance) / DAY_CNT
-
-    plt.plot([day for day in range(len(bar_attendance))], bar_attendance, color='blue', alpha=0.7, linewidth=1, label='in_bar_cnt. average=' + str(average_attendance))
-
-    x1, y1 = [0, DAY_CNT], [MAX_MAN_CNT_WHEN_GOOD, MAX_MAN_CNT_WHEN_GOOD]
-    plt.plot(x1, y1, color='red', label=MAX_MAN_CNT_WHEN_GOOD)
-
-    fig.autofmt_xdate(rotation=25)
-
-    plt.legend(loc='upper right')
+    drawing_3_plots = False
+    if len(plot_data) == 3:
+        drawing_3_plots = True
+    for i in range(len(plot_data)):
+        plot_data[i]['apply_plot_func'](ax[i], plot_data[i]['data'], drawing_3_plots=drawing_3_plots)
 
     plt.show()

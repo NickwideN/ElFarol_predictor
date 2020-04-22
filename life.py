@@ -2,8 +2,6 @@ from typing import Set
 from man import Man
 from config import *
 from predictor import Predictor, predictors, upload_predictors_in_life
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import output
 import check_config
 
@@ -28,27 +26,23 @@ if __name__ == '__main__':
     people = [Man(i) for i in range(MAN_CNT)]
     output.print_predictor_cnt()
 
+    in_bar_cnt_day_cnt_map = {}
     for day in range(DAY_CNT):
         output.print_progress(day, DAY_CNT)
         live_day(day, people, bar_attendance)
+
+        if bar_attendance[day] not in in_bar_cnt_day_cnt_map:
+            in_bar_cnt_day_cnt_map[bar_attendance[day]] = 0
+        in_bar_cnt_day_cnt_map[bar_attendance[day]] += 1
     print()
 
     output.print_bar_attandance(bar_attendance)
 
-    day_cnt_in_bar_cnt_map = {}
-    for day in range(DAY_CNT):
-        if bar_attendance[day] not in day_cnt_in_bar_cnt_map:
-            day_cnt_in_bar_cnt_map[bar_attendance[day]] = 0
-        day_cnt_in_bar_cnt_map[bar_attendance[day]] += 1
-
     print()
-    output.print_day_cnt_in_bar_cnt_map(day_cnt_in_bar_cnt_map)
+    output.print_day_cnt_in_bar_cnt_map(in_bar_cnt_day_cnt_map)
 
     print()
     output.print_predictors(predictors)
 
-    if DRAW_PLOT_in_bar_cnt:
-        output.draw_plot_in_bar_cnt(day_cnt_in_bar_cnt_map)
-
-    if DRAW_PLOT_attendance:
-        output.draw_plot_attendance(bar_attendance)
+    if DRAW_PLOTS:
+        output.draw_plots(bar_attendance=bar_attendance, in_bar_cnt_day_cnt_map=in_bar_cnt_day_cnt_map)
