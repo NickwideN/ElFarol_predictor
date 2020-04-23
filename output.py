@@ -2,8 +2,9 @@
 from predictor import predictors
 import sys
 from config import *
-import matplotlib as mpl
 import matplotlib.pyplot as plt
+import os
+import datetime
 
 
 def print_progress(count, total):
@@ -136,7 +137,10 @@ def apply_in_bar_cnt_plot(ax, in_bar_cnt_day_cnt_map, drawing_3_plots=False, **k
     if not drawing_3_plots:
         ax.legend()
 
-def apply_people_state_plot(ax, people, **kwargs):
+
+def apply_people_state_plot(ax, people, drawing_3_plots=False, day=None):
+    if not drawing_3_plots:
+        ax.set_title("Наборы предикторов у людей в день" + str(day))
     ax.set_xlabel('Человек')
     ax.set_ylabel('Предикторы')
 
@@ -156,9 +160,15 @@ def apply_people_state_plot(ax, people, **kwargs):
                         textcoords="offset points",
                         ha='left', va='bottom', fontsize=9) for _ in range(20)]
 
+    # отметим на ординате всех предикторов
+    # костыль: нарисуем невидимые точки для каждого предиктора
+    x = [0 for _ in predictors]
+    y = [predictor.get_str_state() for predictor in predictors]
+    ax.scatter(x, y, marker='', color='blue')
+
     for man in people:
         x = [man.name for _ in man.predictor_set]
-        y = [predictor_in_set.predictor.name for predictor_in_set in man.predictor_set]
+        y = [predictor_in_set.predictor.get_str_state() for predictor_in_set in man.predictor_set]
         point_title = [predictor_in_set.get_str_state() for predictor_in_set in man.predictor_set]
         ax.scatter(x, y, marker='o', color='blue')
 
@@ -173,7 +183,7 @@ def apply_people_state_plot(ax, people, **kwargs):
     ax.grid(which='major', axis='both', linestyle='--')
 
 
-def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None):
+def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, show=True, last_day=None):
     plot_data = []
     if bar_attendance is not None:
         plot_data.append(dict(data=bar_attendance, apply_plot_func=apply_bar_attendance_plot))
@@ -182,9 +192,12 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None):
     if people is not None:
         plot_data.append(dict(data=people, apply_plot_func=apply_people_state_plot))
 
+    if not plot_data:
+        return None
+
     if len(plot_data) == 3:
         gridsize = (3, 3)
-        fig = plt.figure(figsize=(14, 10))
+        fig = plt.figure(figsize=(14, 11))
         ax = [plt.subplot2grid(gridsize, (0, 1), colspan=1, rowspan=1),
               plt.subplot2grid(gridsize, (0, 2), colspan=1, rowspan=1),
               plt.subplot2grid(gridsize, (1, 0), colspan=3, rowspan=2)]
@@ -192,7 +205,15 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None):
         title = "Наборы предикторов у людей \n"
         title += "День: " + str(len(bar_attendance) - 1)
         fig.suptitle(title, x=0.04, horizontalalignment='left', fontsize=17)
-        fig.text(0.04, 0.8, "Числа у точек (для предиктора в наборе):\n(кол-во активаций,\n процент успешных дней (ПУТ),\nколичество дней подряд, когда\n ПУТ ниже допустимого минимального)", horizontalalignment='left', fontsize=12)
+        text = "Числа у точек (для предиктора в наборе):\n"
+        text += "(кол-во активаций,\n"
+        text += "процент успешных дней (ПУТ),\n"
+        text += "количество дней подряд, когда\n"
+        text += "ПУТ ниже допустимого минимального)\n\n"
+        text += "Числа у предикторов (для предикторов):\n"
+        text += "(кол-во активаций,\n"
+        text += "процент успешных дней)"
+        fig.text(0.04, 0.7, text, horizontalalignment='left', fontsize=12)
 
     elif len(plot_data) == 2:
         fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))
@@ -203,7 +224,26 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None):
     drawing_3_plots = False
     if len(plot_data) == 3:
         drawing_3_plots = True
+    if last_day is None and bar_attendance is not None:
+        last_day = len(bar_attendance) - 1
     for i in range(len(plot_data)):
-        plot_data[i]['apply_plot_func'](ax[i], plot_data[i]['data'], drawing_3_plots=drawing_3_plots)
+        plot_data[i]['apply_plot_func'](ax[i], plot_data[i]['data'], drawing_3_plots=drawing_3_plots, day=last_day)
 
-    plt.show()
+    if show:
+        plt.show()
+    return fig
+
+
+def save_fig(fig, plot_dir=None, name=None):
+    plot_root_dir = 'life_screens'
+    if not os.path.isdir(plot_root_dir):
+        os.makedirs(plot_root_dir)
+    path = plot_root_dir
+    if plot_dir is not None:
+        path += "/" + plot_dir
+        if not os.path.isdir(plot_root_dir + "/" + plot_dir):
+            os.makedirs(path)
+    if name is None:
+        name = datetime.datetime.now().strftime('%H:%M:%S') + ".png"
+    path += "/" + name
+    fig.savefig(path)

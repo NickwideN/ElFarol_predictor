@@ -11,9 +11,9 @@
 """
 
 # Количество человек в городе
-MAN_CNT = 200
+MAN_CNT = 10
 # максимальное количество человек в баре, когда там еще хорошо
-MAX_MAN_CNT_WHEN_GOOD = 120
+MAX_MAN_CNT_WHEN_GOOD = 6
 # Количество дней существования бара
 DAY_CNT = 300
 # Минимальный процент дней, успешных для предиктора, при которых человек будет верить предиктору (Работает при CAN_PREDICTORS_CHANGE_CONDITION=True)
@@ -34,9 +34,9 @@ MIN_PERCENT_WHEN_MAN_BELIEVE = 0.5
 Если в течении MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN дней процент успешных дней меньше чем MIN_PERCENT_SUCCESS_FOR_PredictorInSet, то PredictorInSet заменяется на новый случайный.
 """
 # количество предикторов в наборе предикторов человека
-PREDICTOR_IN_SET_CNT = 7
+PREDICTOR_IN_SET_CNT = 3
 # предикторы в наборе предикторов уникальны?
-ARE_UNIQUE_PREDICTORS_IN_SET = True
+ARE_UNIQUE_PREDICTORS_IN_SET = False
 
 # минимальный процент успешных дней для PredictorInSet
 MIN_PERCENT_SUCCESS_FOR_PredictorInSet = 0.6
@@ -62,8 +62,22 @@ name -- имя предиктора
 CAN_PREDICTORS_CHANGE_CONDITION = False
 
 ###### output config ######
-# рисовать графики?
-DRAW_PLOTS = True
+"""
+Есть 3 графика: 'attendance', 'in_bar_cnt', 'people_state'
+attendance -- График посещаемости бара
+in_bar_cnt -- График зависимости количества дней от числа человек в баре в этот день
+people_state -- Наборы предикторов у людей в определенный день
+Пример (советуется):
+DRAW_PLOTS = ['attendance', 'in_bar_cnt'] 
+SAVE_PLOTS = ['attendance', 'in_bar_cnt', 'people_state']
+установите [], чтобы не рисовать или не сохранять график
+"""
+# какие графики рисовать графики?
+DRAW_PLOTS = ['attendance', 'in_bar_cnt']
+# какие графики сохранять графики?
+SAVE_PLOTS = []
+# сохранять ли график за каждый день жизни бара? Если False, то сохранит только график на последний день
+SAVE_PLOTS_OF_EVERY_DAY = False
 # сортировать вывод предикторов? (True, False или 'both')
 SORT_PREDICTORS = 'both'
 

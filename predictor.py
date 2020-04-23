@@ -48,6 +48,10 @@ class Predictor:
     def persent_success(self):
         return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0
 
+    def get_str_state(self):
+        return "{} ({},{:.0%})".format(self.name, self.__active_cnt, self.persent_success())
+
+
 
 def upload_predictors_in_life():
     for pred_name, pred_attr in predictors_json.items():
