@@ -1,7 +1,7 @@
 from typing import Set
 from man import Man
 from config import *
-from predictor import Predictor, predictors, upload_predictors_in_life
+from predictor import Predictor, predictors, upload_predictors_in_life, get_active_predictors
 import output
 import check_config
 import datetime
@@ -12,11 +12,9 @@ def live_day(today, people, bar_attendance):
     for man in people:
         if man.decide_go(today, bar_attendance):
             bar_attendance[today] += 1
-    active_predictors: Set[Predictor] = set()
     for man in people:
-        active_predictors.update(man.get_predictors())
         man.analyze_day(today, bar_attendance)
-    for predictor in active_predictors:
+    for predictor in get_active_predictors(people):
         predictor.analyze_day(today, bar_attendance)
 
 

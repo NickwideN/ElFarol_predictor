@@ -93,6 +93,9 @@ class Man:
                     else:
                         self.predictor_set.append(PredictorInSet())
 
+    def is_day_success(self, today, bar_attendance):
+        return self.decide_go(today, bar_attendance) == is_day_success(bar_attendance[today])
+
     def get_predictors(self):
         """
         Возвращает предикторы, которые используются в наборе у человека

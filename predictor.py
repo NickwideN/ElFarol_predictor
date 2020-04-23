@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any, Dict, Set
 
 from config import is_day_success, CAN_PREDICTORS_CHANGE_CONDITION, MAN_CNT, MIN_PERCENT_WHEN_MAN_BELIEVE
 import json
@@ -36,8 +36,12 @@ class Predictor:
 
     def analyze_day(self, today, bar_attendance):
         self.__active_cnt += 1
-        if is_day_success(bar_attendance[today]) == condition_go(self.name, today, bar_attendance):
+        if self.is_day_success(today, bar_attendance):
             self.__success_cnt += 1
+
+    # todo поменять condition_go на self.decide_go когда логика поменяется на теорию, когда человек верит или не верит предиктору
+    def is_day_success(self, today, bar_attendance):
+        return is_day_success(bar_attendance[today]) == condition_go(self.name, today, bar_attendance)
 
     def success_cnt(self):
         return self.__success_cnt
@@ -50,6 +54,16 @@ class Predictor:
 
     def get_str_state(self):
         return "{} ({};{:.0%})".format(self.name, self.__active_cnt, self.persent_success())
+
+    def is_active(self, people):
+        return self in get_active_predictors(people)
+
+
+def get_active_predictors(people):
+    active_predictors: Set[Predictor] = set()
+    for man in people:
+        active_predictors.update(man.get_predictors())
+    return active_predictors
 
 
 def upload_predictors_in_life():
