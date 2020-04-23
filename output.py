@@ -232,6 +232,7 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, sh
 
     if show:
         plt.show()
+    plt.close()
     return fig
 
 
