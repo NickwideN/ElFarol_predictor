@@ -237,12 +237,15 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, sh
         text += "ПУТ ниже допустимого минимального)\n\n"
         text += "Числа у предикторов (для предикторов):\n"
         text += "(кол-во активаций;\n"
-        text += "процент успешных дней)"
-        fig.text(0.04, 0.75, text, horizontalalignment='left', fontsize=12)
+        text += "процент успешных дней)\n\n"
+        text += "Цвета означают успешность дня\n"
+        text += "для бара, предиктора и человека"
+        fig.text(0.04, 0.695, text, horizontalalignment='left', fontsize=12)
         color = 'red'
         if is_day_success(bar_attendance[last_day]):
             color = 'green'
-        fig.text(0.04, 0.68, "Количество человек в баре: {}".format(bar_attendance[last_day]), fontsize=15, color=color)
+        fig.text(0.04, 0.665, "Количество человек в баре: {}".format(bar_attendance[last_day]), fontsize=15, color=color)
+
 
     elif len(plot_data) == 2:
         fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))

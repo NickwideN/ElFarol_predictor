@@ -79,7 +79,7 @@ SAVE_PLOTS = []
 # сохранять ли график за каждый день жизни бара? Если False, то сохранит только график на последний день
 SAVE_PLOTS_OF_EVERY_DAY = False
 # сортировать вывод предикторов? (True, False или 'both')
-SORT_PREDICTORS = 'both'
+SORT_PREDICTORS = True
 
 
 def is_day_success(in_bar_cnt):
