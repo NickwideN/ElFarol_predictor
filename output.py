@@ -207,12 +207,12 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, sh
         title += "День: " + str(len(bar_attendance) - 1)
         fig.suptitle(title, x=0.04, horizontalalignment='left', fontsize=17)
         text = "Числа у точек (для предиктора в наборе):\n"
-        text += "(кол-во активаций,\n"
-        text += "процент успешных дней (ПУТ),\n"
+        text += "(кол-во активаций;\n"
+        text += "процент успешных дней (ПУТ);\n"
         text += "количество дней подряд, когда\n"
         text += "ПУТ ниже допустимого минимального)\n\n"
         text += "Числа у предикторов (для предикторов):\n"
-        text += "(кол-во активаций,\n"
+        text += "(кол-во активаций;\n"
         text += "процент успешных дней)"
         fig.text(0.04, 0.7, text, horizontalalignment='left', fontsize=12)
 

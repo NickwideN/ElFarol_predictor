@@ -50,7 +50,7 @@ class PredictorInSet:
         return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0
 
     def get_str_state(self):
-        return "({},{:.0%},{})".format(self.__active_cnt, self.persent_success(), self.__day_cnt_with_percent_under_min)
+        return "({};{:.0%};{})".format(self.__active_cnt, self.persent_success(), self.__day_cnt_with_percent_under_min)
 
 
 class Man:
