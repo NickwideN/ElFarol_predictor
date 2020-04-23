@@ -39,6 +39,11 @@ if __name__ == '__main__':
     if 'people_state' in SAVE_PLOTS:
         save_plots_kwargs['people'] = people
 
+    if save_plots_kwargs and SAVE_PLOTS_OF_EVERY_DAY:
+        fig = output.draw_parameters()
+        output.save_fig(fig, plot_dir=now_str, name="Parameters.png")
+        fig = output.draw_plots(bar_attendance=bar_attendance, in_bar_cnt_day_cnt_map=in_bar_cnt_day_cnt_map, show=False)
+
     for day in range(DAY_CNT):
         output.print_progress(day, DAY_CNT)
         live_day(day, people, bar_attendance)
@@ -59,6 +64,10 @@ if __name__ == '__main__':
 
     print()
     output.print_predictors(predictors)
+
+    if save_plots_kwargs and SAVE_PLOTS_OF_EVERY_DAY:
+        fig = output.draw_plots(bar_attendance=bar_attendance, in_bar_cnt_day_cnt_map=in_bar_cnt_day_cnt_map, show=False)
+        output.save_fig(fig, plot_dir=now_str, name="Result.png")
 
     if not SAVE_PLOTS_OF_EVERY_DAY:
         fig = output.draw_plots(**save_plots_kwargs, show=False)

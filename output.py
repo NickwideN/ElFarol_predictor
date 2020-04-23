@@ -5,6 +5,7 @@ from config import *
 import matplotlib.pyplot as plt
 import os
 import datetime
+import config
 
 
 def print_progress(count, total):
@@ -148,17 +149,17 @@ def apply_people_state_plot(ax, people, drawing_3_plots=False, day=None):
                             textcoords="offset points",
                             ha='left', va='bottom', fontsize=9),
                        dict(xytext=(0, -14),
-                        textcoords="offset points",
-                        ha='left', va='bottom', fontsize=9),
+                            textcoords="offset points",
+                            ha='left', va='bottom', fontsize=9),
                        dict(xytext=(0, -6),
-                        textcoords="offset points",
-                        ha='left', va='bottom', fontsize=9),
+                            textcoords="offset points",
+                            ha='left', va='bottom', fontsize=9),
                        dict(xytext=(0, -6),
-                        textcoords="offset points",
-                        ha='right', va='bottom', fontsize=9)]
+                            textcoords="offset points",
+                            ha='right', va='bottom', fontsize=9)]
     annotate_kwargs += [dict(xytext=(0, 2),
-                        textcoords="offset points",
-                        ha='left', va='bottom', fontsize=9) for _ in range(20)]
+                             textcoords="offset points",
+                             ha='left', va='bottom', fontsize=9) for _ in range(20)]
 
     # отметим на ординате всех предикторов
     # костыль: нарисуем невидимые точки для каждого предиктора
@@ -234,6 +235,17 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, sh
     return fig
 
 
+def draw_parameters():
+    fig = plt.figure(figsize=(14, 11))
+    text = "Параметры жизни:\n\n"
+    for param in dir(config):
+        if param[0].isupper():
+            text += "{}: {}\n".format(param, globals()[param])
+    fig.text(0.04, 0.6, text, fontsize=15)
+    plt.show()
+    return fig
+
+
 def save_fig(fig, plot_dir=None, name=None):
     plot_root_dir = 'life_screens'
     if not os.path.isdir(plot_root_dir):
@@ -246,4 +258,4 @@ def save_fig(fig, plot_dir=None, name=None):
     if name is None:
         name = datetime.datetime.now().strftime('%H:%M:%S') + ".png"
     path += "/" + name
-    fig.savefig(path)
+    fig.savefig(path, bbox_inches='tight')

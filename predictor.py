@@ -52,7 +52,6 @@ class Predictor:
         return "{} ({},{:.0%})".format(self.name, self.__active_cnt, self.persent_success())
 
 
-
 def upload_predictors_in_life():
     for pred_name, pred_attr in predictors_json.items():
         if "use" in pred_attr and not pred_attr["use"]:
