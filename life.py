@@ -27,7 +27,7 @@ if __name__ == '__main__':
 
     in_bar_cnt_day_cnt_map = {}
 
-    now_str = datetime.datetime.now().strftime("%Y%m%d-%H:%M:%S")
+    now_str = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
     save_plots_kwargs = dict()
     if 'attendance' in SAVE_PLOTS:
