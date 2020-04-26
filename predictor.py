@@ -3,6 +3,7 @@ from typing import Any, Dict, Set
 from config import is_day_success, CAN_PREDICTORS_CHANGE_CONDITION, MAN_CNT, MIN_PERCENT_WHEN_MAN_BELIEVE
 import json
 import re
+import numpy as np
 
 # Набор использующихся предикторов
 predictors = []
@@ -112,7 +113,7 @@ def condition_go(predictor_name, today, bar_attendance):
     if len(bar_attendance) == 1:
         return default
     if pred_attr["days"] == "all":
-        return is_day_success(globals()[func_name + "_"](bar_attendance))
+        return is_day_success(globals()[func_name + "_"](bar_attendance[:-1]))
     earliest_day = min(pred_attr["days"])
     if today >= -earliest_day:
         attendance_in_days = [bar_attendance[today + day] for day in pred_attr["days"]]

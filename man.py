@@ -76,11 +76,18 @@ class Man:
         принять решения, идти в бар или не идти
         :return: bool
         """
-        decide_go_cnt = 0
-        for predictor_in_set in self.predictor_set:
-            if predictor_in_set.predictor.decide_go(today, bar_attendance):
-                decide_go_cnt += 1
-        return round(decide_go_cnt / PREDICTOR_IN_SET_CNT)
+        if FOLLOW_TYPE == 0:
+            decide_go_cnt = 0
+            for predictor_in_set in self.predictor_set:
+                if predictor_in_set.predictor.decide_go(today, bar_attendance):
+                    decide_go_cnt += 1
+            return round(decide_go_cnt / PREDICTOR_IN_SET_CNT)
+        elif FOLLOW_TYPE == 1:
+            max_success_pr = self.predictor_set[0].predictor
+            for predictor_in_set in self.predictor_set:
+                if predictor_in_set.predictor.persent_success() > max_success_pr.persent_success():
+                    max_success_pr = predictor_in_set.predictor
+            return max_success_pr.decide_go(today, bar_attendance)
 
     def analyze_day(self, today, bar_attendance):
         for predictor_in_set in self.predictor_set:
