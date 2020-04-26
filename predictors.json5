@@ -16,83 +16,89 @@
     "change_condition": true
   },
   "prev_prev_day": {
-    "days": [-2]
+    "days": [-2],
+    "change_condition": true
   },
   "average_2_days": {
     "func": "average",
-    "days": [-1, -2]
+    "days": [-1, -2],
+    "change_condition": true
   },
   "average_4_days": {
     "func": "average",
-    "days": [-1, -2, -3, -4]
+    "days": [-1, -2, -3, -4],
+    "change_condition": true
   },
   "total_average": {
     "func": "average",
-    "days": "all"
+    "days": "all",
+    "change_condition": true,
+    "use": false
   },
   "min_2_days": {
     "func": "min",
-    "days": [-1, -2]
+    "days": [-1, -2],
+    "change_condition": true
   },
   "min_3_days": {
     "func": "min",
-    "days": [-1, -2, -3]
+    "days": [-1, -2, -3],
+    "change_condition": true
   },
   "max_2_days": {
     "func": "max",
-    "days": [-1, -2]
+    "days": [-1, -2],
+    "change_condition": true
   },
   "max_3_days": {
     "func": "max",
-    "days": [-1, -2, -3]
+    "days": [-1, -2, -3],
+    "change_condition": true
   },
   "max_4_days": {
     "func": "max",
-    "days": [-1, -2, -3, -4]
-  },
-  "max_all_days": {
-    "func": "max",
-    "days": "all"
+    "days": [-1, -2, -3, -4],
+    "change_condition": true
   },
   "mirror_1_day": {
     "func": "mirror_average",
-    "days": [-1]
+    "days": [-1],
+    "change_condition": true
   },
   "mirror_2_day": {
     "func": "mirror_average",
-    "days": [-1, -2]
+    "days": [-1, -2],
+    "change_condition": true
   },
   "mirror_3_day": {
     "func": "mirror_average",
-    "days": [-1, -2, -3]
+    "days": [-1, -2, -3],
+    "change_condition": false
   },
   "mirror_4_day": {
     "func": "mirror_average",
-    "days": [-1, -2, -3, -4]
-  },
-  "mirror_all_day": {
-    "func": "mirror_average",
-    "days": "all"
+    "days": [-1, -2, -3, -4],
+    "change_condition": true
   },
   "median_1_day": {
     "func": "median",
-    "days": [-1]
+    "days": [-1],
+    "change_condition": true
   },
   "median_2_day": {
     "func": "median",
-    "days": [-1, -2]
+    "days": [-1, -2],
+    "change_condition": true
   },
   "median_3_day": {
     "func": "median",
-    "days": [-1, -2, -3]
+    "days": [-1, -2, -3],
+    "change_condition": true
   },
   "median_4_day": {
     "func": "median",
-    "days": [-1, -2, -3, -4]
-  },
-  "median_all_days": {
-    "func": "median",
-    "days": "all"
+    "days": [-1, -2, -3, -4],
+    "change_condition": true
   }
 }
 
