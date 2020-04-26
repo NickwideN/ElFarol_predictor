@@ -103,15 +103,18 @@ def median_(attendance):
 
 def condition_go(predictor_name, today, bar_attendance):
     # тут len(bar_attendance) = today
+    default = True
     pred_attr: Dict[str, Any] = predictors_json[predictor_name]
     if "func" in pred_attr:
         func_name = pred_attr["func"]
     else:
         func_name = "min"
+    if len(bar_attendance) == 1:
+        return default
     if pred_attr["days"] == "all":
         return is_day_success(globals()[func_name + "_"](bar_attendance))
     earliest_day = min(pred_attr["days"])
     if today >= -earliest_day:
         attendance_in_days = [bar_attendance[today + day] for day in pred_attr["days"]]
         return is_day_success(globals()[func_name + "_"](attendance_in_days))
-    return True
+    return default
