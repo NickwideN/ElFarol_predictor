@@ -75,7 +75,7 @@ SAVE_PLOTS = ['attendance', 'in_bar_cnt', 'people_state']
 # какие графики рисовать графики?
 DRAW_PLOTS = ['attendance', 'in_bar_cnt']
 # какие графики сохранять графики?
-SAVE_PLOTS = ['attendance', 'in_bar_cnt', 'people_state']
+SAVE_PLOTS = []
 # сохранять ли график за каждый день жизни бара? Если False, то сохранит только график на последний день
 SAVE_PLOTS_OF_EVERY_DAY = True
 # сортировать вывод предикторов? (True, False или 'both')
