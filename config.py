@@ -36,7 +36,12 @@ MIN_PERCENT_WHEN_MAN_BELIEVE = 0.5
 # количество предикторов в наборе предикторов человека
 PREDICTOR_IN_SET_CNT = 3
 # предикторы в наборе предикторов уникальны?
-ARE_UNIQUE_PREDICTORS_IN_SET = True
+ARE_UNIQUE_PREDICTORS_IN_SET = False
+
+# как человек будет использовать советы предикторов?
+# 0 - слушается мнению большинства предикторов
+# 1 - слушаться мнения успешного в своем наборе предиктора
+FOLLOW_TYPE = 1
 
 # минимальный процент успешных дней для PredictorInSet
 MIN_PERCENT_SUCCESS_FOR_PredictorInSet = 0.7
