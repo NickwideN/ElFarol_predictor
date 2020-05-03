@@ -264,6 +264,9 @@ def draw_plots(plots, plot_data, last_day=None, show=True):
     :param last_day: Последний день графика, который будет прорисован
     :return:
     """
+    if not plots:
+        return None
+
     if last_day is None and "bar_attendance" in plot_data:
         last_day = len(plot_data["bar_attendance"]) - 1
     if last_day is None:
@@ -305,9 +308,9 @@ def draw_plots(plots, plot_data, last_day=None, show=True):
         ax = [ax]
 
     plots = sorted(plots)
-    for plot_type in range(len(plots)):
+    for i in range(len(ax)):
         # Прорисуем график plot_type на аксесе ax[plot_type]
-        globals()[PLOT_APPLY_FUNCS[plot_type]](ax[plot_type], plot_data, last_day, drawing_3_plots=drawing_3_plots)
+        globals()[PLOT_APPLY_FUNCS[plots[i]]](ax[i], plot_data, last_day, drawing_3_plots=drawing_3_plots)
     if show:
         plt.show()
     plt.close()

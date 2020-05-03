@@ -59,7 +59,7 @@ if __name__ == '__main__':
         fig = output.draw_plots([output.PLOT_TYPE_BAR_ATTENDANCE, output.PLOT_TYPE_IN_BAR_CNT], plot_data, show=False)
         output.save_fig(fig, plot_dir=now_str, name="Result.png")
 
-    if not SAVE_PLOTS_OF_EVERY_DAY:
+    if SAVE_PLOTS and not SAVE_PLOTS_OF_EVERY_DAY:
         fig = output.draw_plots(SAVE_PLOTS, plot_data, show=False)
         if fig:
             output.save_fig(fig, plot_dir=None, name=now_str + ".png")
