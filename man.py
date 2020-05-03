@@ -77,17 +77,30 @@ class Man:
         :return: bool
         """
         if FOLLOW_TYPE == 0:
+            # получим то решение, за которое проголосовало большинство предикторов в наборе
             decide_go_cnt = 0
             for predictor_in_set in self.predictor_set:
                 if predictor_in_set.predictor.decide_go(today, bar_attendance):
                     decide_go_cnt += 1
-            return round(decide_go_cnt / PREDICTOR_IN_SET_CNT)
+            decision = round(decide_go_cnt / PREDICTOR_IN_SET_CNT)
         elif FOLLOW_TYPE == 1:
+            # Найдем предиктор с наибольшим процентом успехов
             max_success_pr = self.predictor_set[0].predictor
             for predictor_in_set in self.predictor_set:
                 if predictor_in_set.predictor.persent_success() > max_success_pr.persent_success():
                     max_success_pr = predictor_in_set.predictor
-            return max_success_pr.decide_go(today, bar_attendance)
+            # Сделаем список предикторов у которых наибольший процент успехов
+            predictors_with_max_success_percent = []
+            for predictor_in_set in self.predictor_set:
+                if predictor_in_set.predictor.persent_success() == max_success_pr.persent_success():
+                    predictors_with_max_success_percent.append(predictor_in_set.predictor)
+            # получим то решение, за которое проголосовало большинство предикторов в полученном списке
+            decide_go_cnt = 0
+            for predictor in predictors_with_max_success_percent:
+                if predictor.decide_go(today, bar_attendance):
+                    decide_go_cnt += 1
+            decision = round(decide_go_cnt / len(predictors_with_max_success_percent))
+        return decision
 
     def analyze_day(self, today, bar_attendance):
         for predictor_in_set in self.predictor_set:
