@@ -19,9 +19,7 @@ MAN_CNT = 10
 # максимальное количество человек в баре, когда там еще хорошо
 MAX_MAN_CNT_WHEN_GOOD = 6
 # Количество дней существования бара
-DAY_CNT = 200
-# Минимальный процент дней, успешных для предиктора, при которых человек будет верить предиктору (Работает при CAN_PREDICTORS_CHANGE_CONDITION=True)
-MIN_PERCENT_WHEN_MAN_BELIEVE = 0.5
+DAY_CNT = 300
 
 ###### man config ######
 """
@@ -76,7 +74,6 @@ MIN_PERCENT_WHEN_MAN_BELIEVE = 0.5
 
 ###### output config ######
 # todo написать про выводимые данные
-# todo поменять логику вывода графиков
 """
 Есть 3 графика: 'attendance', 'in_bar_cnt', 'people_state'
 0 -- График посещаемости бара
