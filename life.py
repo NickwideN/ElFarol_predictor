@@ -1,26 +1,29 @@
-from typing import Set
 from man import Man
 from config import *
-from predictor import Predictor, predictors, upload_predictors_in_life, get_active_predictors
+from predictor import predictors, upload_predictors_in_life, get_active_predictors
 import output
-import check_config
+from exceptions import PredictorInSetCntExceedsPredictorCnt
 import datetime
 
 
 def live_day(today, people, bar_attendance):
     bar_attendance.append(0)
+    # Утро. Люди решают идти либо не идти в бар и следуют своему решению
     for man in people:
         if man.decide_go(today, bar_attendance):
             bar_attendance[today] += 1
-    for man in people:
-        man.analyze_day(today, bar_attendance)
+    # Вечер. Каждый активный предиктор анализирует день
     for predictor in get_active_predictors(people):
         predictor.analyze_day(today, bar_attendance)
+    # Вечер. Каждый человек анализирует день и меняет свои предикторы при необходимости
+    for man in people:
+        man.analyze_day(today, bar_attendance)
 
 
 if __name__ == '__main__':
     upload_predictors_in_life()
-    check_config.check_config_parameters()
+    if PREDICTOR_IN_SET_CNT > len(predictors):
+        raise PredictorInSetCntExceedsPredictorCnt(len(predictors))
     bar_attendance = []
     people = [Man(i) for i in range(MAN_CNT)]
     output.print_predictor_cnt()
@@ -29,6 +32,7 @@ if __name__ == '__main__':
 
     now_str = datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
 
+    # todo надо поменять логику. В output.draw_plots передавать все 3 kwargsа, а рисовать то, что пользователь отметит
     save_plots_kwargs = dict()
     if 'attendance' in SAVE_PLOTS:
         save_plots_kwargs['bar_attendance'] = bar_attendance
@@ -45,6 +49,7 @@ if __name__ == '__main__':
         output.print_progress(day, DAY_CNT)
         live_day(day, people, bar_attendance)
 
+        # todo Надо добавить историю и исходя из нее сторить графики и после того как вся жизнь прошла
         if bar_attendance[day] not in in_bar_cnt_day_cnt_map:
             in_bar_cnt_day_cnt_map[bar_attendance[day]] = 0
         in_bar_cnt_day_cnt_map[bar_attendance[day]] += 1

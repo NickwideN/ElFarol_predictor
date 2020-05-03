@@ -1,7 +1,7 @@
 from typing import List, Set
 
 from config import *
-from predictor import predictors, condition_go
+from predictor import predictors
 import random
 
 
@@ -21,7 +21,8 @@ class PredictorInSet:
 
     def analyze_day(self, today, bar_attendance):
         self.__active_cnt += 1
-        if is_day_success(bar_attendance[today]) == condition_go(self.predictor.name, today, bar_attendance):
+        # Если совет пердиктора в наборе был правильным
+        if is_day_success(bar_attendance[today]) == self.predictor.decide_go(today, bar_attendance, trust=True):
             self.__success_cnt += 1
             self.__day_cnt_with_percent_under_min = 0
         elif self.persent_success() < MIN_PERCENT_SUCCESS_FOR_PredictorInSet:

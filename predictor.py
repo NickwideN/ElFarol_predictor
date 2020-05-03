@@ -1,48 +1,86 @@
 from typing import Any, Dict, Set
 
-from config import is_day_success, CAN_PREDICTORS_CHANGE_CONDITION, MAN_CNT, MIN_PERCENT_WHEN_MAN_BELIEVE
+from config import is_day_success, TRUST_PREDICTORS_ANYWHERE, MAN_CNT, MIN_PERCENT_WHEN_MAN_BELIEVE
 import json
 import re
-import numpy as np
+from exceptions import FunctionIsNotSpecified
+#import numpy as np
 
 # Набор использующихся предикторов
 predictors = []
 
 with open('predictors.json5', 'r', encoding="utf8") as f:
-    # Делаем из json5 обычный json (убираем комментарии)
-    json_str = re.search(r'\{[^qq]*\}\n\}', f.read()).group(0)
+    # Делаем из json5 обычный json (выделяем всё, что внутри самых внешних фигурных скобок)
+    json_str = re.search(r'\{(?:[^q]|q)*\}\n\}', f.read()).group(0)
     predictors_json = json.loads(json_str)
 
 
 class Predictor:
-    def __init__(self):
+    def __init__(self, name, attr):
+        self.name = name
+
+        # Определим дни, на основе которых предиктор будет принимать решение стоит идти в бар или не стоит
+        self.__days = "all"
+        if "days" in attr:
+            self.__days = attr["days"]
+
+        # Определим функцию, на основе которой будет приниматься решение стоит идти в бар или не стоит
+        func_name = ''
+        if len(self.__days) == 1:
+            # тут может быть совершенно любая функция, которая выдает посещаемость в заданный день, например min
+            func_name = 'min'
+        if "func" in attr:
+            func_name = attr["func"]
+        if not func_name:
+            raise FunctionIsNotSpecified(self.name)
+        self.__func = globals()[func_name + "_"]
+
+        self.__trust_anywhere = True
+        if "can_trust_anywhere" in attr:
+            self.__trust_anywhere = attr["trust_anywhere"]
+
         self.__success_cnt = 0
         self.__active_cnt = 0
-        self.name = ''
-        self.can_change_condition = False
-        predictors.append(self)
 
     def __repr__(self):
         return self.name
 
-    def decide_go(self, today, bar_attendance):
+    def decide_go(self, today, bar_attendance, trust=False):
         """
-        принять решение, идти или не идти в бар
+        получить совет идти или не идти в бар
+        :param today: сегодняшний день. (не используется для определения совета)
+        :param bar_attendance: посещаемость, список. Не обязательно последний день списка -- today
+        :param trust: bool Eсли False и ПУД меньше минимального, вернет совет наоборот (если can_trust_anywhere=True)
+        :return:
         """
-        if not self.can_change_condition or not CAN_PREDICTORS_CHANGE_CONDITION or \
-                (self.__active_cnt and self.__success_cnt / self.__active_cnt > MIN_PERCENT_WHEN_MAN_BELIEVE):
-            return condition_go(self.name, today, bar_attendance)
+        advice = True
+        if today == 0:
+            pass
+        elif self.__days == 'all':
+            advice = is_day_success(self.__func(bar_attendance[:today]))
         else:
-            return not condition_go(self.name, today, bar_attendance)
+            # соберем необходимые посещаемости дней
+            attendance_in_days = []
+            for day in self.__days:
+                if today >= -day:
+                    attendance_in_days.append(bar_attendance[today + day])
+            if attendance_in_days:
+                advice = is_day_success(self.__func(attendance_in_days))
+        # Если не доверять совету, не доверять любому совету предиктора, не доверять советам любого предиктора и ПУД низкий
+        # Поменяем совет
+        if not trust and not self.__trust_anywhere and not TRUST_PREDICTORS_ANYWHERE and \
+                self.persent_success() < MIN_PERCENT_WHEN_MAN_BELIEVE:
+            advice = not advice
+        return advice
 
     def analyze_day(self, today, bar_attendance):
         self.__active_cnt += 1
         if self.is_day_success(today, bar_attendance):
             self.__success_cnt += 1
 
-    # todo поменять condition_go на self.decide_go когда логика поменяется на теорию, когда человек верит или не верит предиктору
     def is_day_success(self, today, bar_attendance):
-        return is_day_success(bar_attendance[today]) == condition_go(self.name, today, bar_attendance)
+        # Совет пердиктора был правильным?
+        return is_day_success(bar_attendance[today]) == self.decide_go(today, bar_attendance, trust=True)
 
     def success_cnt(self):
         return self.__success_cnt
@@ -71,13 +109,11 @@ def upload_predictors_in_life():
     for pred_name, pred_attr in predictors_json.items():
         if "use" in pred_attr and not pred_attr["use"]:
             continue
-        pred_obj = Predictor()
-        pred_obj.name = pred_name
-        if "change_condition" in pred_attr:
-            pred_obj.can_change_condition = pred_attr["change_condition"]
+        pred_obj = Predictor(pred_name, pred_attr)
+        predictors.append(pred_obj)
 
 
-# функции для condition
+# функции предикторов
 def min_(attendance):
     return min(attendance)
 
@@ -101,21 +137,9 @@ def median_(attendance):
     else:
         return 0.5 * (attendance[len(attendance) // 2 - 1] + attendance[len(attendance) // 2])
 
-
-def condition_go(predictor_name, today, bar_attendance):
-    # тут len(bar_attendance) = today
-    default = True
-    pred_attr: Dict[str, Any] = predictors_json[predictor_name]
-    if "func" in pred_attr:
-        func_name = pred_attr["func"]
-    else:
-        func_name = "min"
-    if len(bar_attendance) == 1:
-        return default
-    if pred_attr["days"] == "all":
-        return is_day_success(globals()[func_name + "_"](bar_attendance[:-1]))
-    earliest_day = min(pred_attr["days"])
-    if today >= -earliest_day:
-        attendance_in_days = [bar_attendance[today + day] for day in pred_attr["days"]]
-        return is_day_success(globals()[func_name + "_"](attendance_in_days))
-    return default
+# последняя точка линии тренда. Тут какая то ошибка... надо исправить
+# def trend_(attendance):
+#     z = np.polyfit(range(len(attendance)), attendance, 1)
+#     # y = x * a + b
+#     y_0 = (len(attendance) - 1) * z[0] + z[1]
+#     return y_0

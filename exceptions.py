@@ -1,8 +1,5 @@
 # Модуль для проверки параметров из config
 
-from config import *
-from predictor import predictors
-
 
 class PredictorInSetCntExceedsPredictorCnt(Exception):
     def __init__(self, predictor_cnt: int = ''):
@@ -12,6 +9,9 @@ class PredictorInSetCntExceedsPredictorCnt(Exception):
         return self.message
 
 
-def check_config_parameters():
-    if PREDICTOR_IN_SET_CNT > len(predictors):
-        raise PredictorInSetCntExceedsPredictorCnt(len(predictors))
+class FunctionIsNotSpecified(Exception):
+    def __init__(self, predictor_name=''):
+        self.message = "Не указана функция у предиктора " + predictor_name
+
+    def __str__(self):
+        return self.message
