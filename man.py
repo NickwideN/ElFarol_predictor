@@ -86,7 +86,7 @@ class Man:
             decision = round(decide_go_cnt / PREDICTOR_IN_SET_CNT)
         elif FOLLOW_TYPE == 1:
             # Найдем предиктор с наибольшим процентом успехов
-            max_success_pr = self.predictor_set[0].predictor
+            max_success_pr = list(self.predictor_set)[0].predictor
             for predictor_in_set in self.predictor_set:
                 if predictor_in_set.predictor.persent_success() > max_success_pr.persent_success():
                     max_success_pr = predictor_in_set.predictor
