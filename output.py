@@ -236,8 +236,6 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
 
     for man in people:
         x = [man.name for _ in man.predictor_set]
-        # Если предиктор неактивен, он зачеркнут
-        #y = [predictor_in_set.predictor.get_str_state() if predictor_in_set.predictor.is_active(people) else util.cross_text(predictor_in_set.predictor.get_str_state()) for predictor_in_set in man.predictor_set]
         y = [predictor_in_set.predictor.get_str_state() for predictor_in_set in man.predictor_set]
         point_title = [predictor_in_set.get_str_state() for predictor_in_set in man.predictor_set]
         ax.scatter(x, y, marker='o', color='blue')
