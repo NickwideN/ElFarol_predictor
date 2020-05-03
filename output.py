@@ -2,11 +2,24 @@
 from predictor import predictors
 import sys
 from config import *
+from exceptions import ArgumentsNotAssigned
 import matplotlib.pyplot as plt
 import os
 import datetime
 import config
 import util
+
+# Типы графиков:
+# Посещаемость бара
+PLOT_TYPE_BAR_ATTENDANCE = 0
+# График зависимости количества дней от числа человек в баре в этот день
+PLOT_TYPE_IN_BAR_CNT = 1
+# График состояния людей (наборы предикторов)
+PLOT_TYPE_PEOPLE_STATE = 2
+
+PLOT_APPLY_FUNCS = {PLOT_TYPE_BAR_ATTENDANCE: "apply_bar_attendance_plot",
+                    PLOT_TYPE_IN_BAR_CNT: "apply_in_bar_cnt_plot",
+                    PLOT_TYPE_PEOPLE_STATE: "apply_people_state_plot"}
 
 
 def print_progress(count, total):
@@ -27,13 +40,14 @@ def print_bar_attandance(bar_attendance):
         print('{:^5}|{:^7}'.format(day, bar_attendance[day]))
 
 
-def print_day_cnt_in_bar_cnt_map(day_cnt_in_bar_cnt_map):
+def print_in_bar_cnt_day_cnt_map(bar_attendance):
+    in_bar_cnt_day_cnt_map = create_in_bar_cnt_day_cnt_map(bar_attendance)
     print("Количество дней, когда в баре было in_bar_cnt человек:")
     i = 0
-    for in_bar_cnt in sorted(day_cnt_in_bar_cnt_map):
+    for in_bar_cnt in sorted(in_bar_cnt_day_cnt_map):
         if not i % 30:
             print('{:^5}|{:^7}'.format('in_bar_cnt', 'day_cnt'))
-        print('{:^10}|{:^7}'.format(in_bar_cnt, day_cnt_in_bar_cnt_map[in_bar_cnt]))
+        print('{:^10}|{:^7}'.format(in_bar_cnt, in_bar_cnt_day_cnt_map[in_bar_cnt]))
         i += 1
 
 
@@ -64,7 +78,12 @@ def print_predictors(predictors):
             print(format_str.format(pr.name, pr.success_cnt(), pr.active_cnt(), pr.persent_success()))
 
 
-def apply_bar_attendance_plot(ax, bar_attendance, drawing_3_plots=False, **kwargs):
+def apply_bar_attendance_plot(ax, data, last_day, drawing_3_plots=False):
+    if "bar_attendance" in data:
+        bar_attendance = data["bar_attendance"][:last_day + 1]
+    else:
+        raise ArgumentsNotAssigned('data["bar_attendance"]')
+
     ax.set_title("График посещаемости бара")
     ax.set_xlabel('День')
     ax.set_ylabel('Количество человек в баре')
@@ -99,7 +118,25 @@ def apply_bar_attendance_plot(ax, bar_attendance, drawing_3_plots=False, **kwarg
         ax.legend()
 
 
-def apply_in_bar_cnt_plot(ax, in_bar_cnt_day_cnt_map, drawing_3_plots=False, **kwargs):
+def create_in_bar_cnt_day_cnt_map(bar_attendance, last_day=None):
+    if last_day is None:
+        last_day = len(bar_attendance) - 1
+    in_bar_cnt_day_cnt_map = {}
+    for day in range(last_day + 1):
+        if bar_attendance[day] not in in_bar_cnt_day_cnt_map:
+            in_bar_cnt_day_cnt_map[bar_attendance[day]] = 0
+        in_bar_cnt_day_cnt_map[bar_attendance[day]] += 1
+    return in_bar_cnt_day_cnt_map
+
+
+def apply_in_bar_cnt_plot(ax, data, last_day, drawing_3_plots=False):
+    if "in_bar_cnt_day_cnt_map" not in data and "bar_attendance" not in data:
+        raise ArgumentsNotAssigned("data")
+    if "in_bar_cnt_day_cnt_map" in data:
+        in_bar_cnt_day_cnt_map = data["in_bar_cnt_day_cnt_map"]
+    else:
+        in_bar_cnt_day_cnt_map = create_in_bar_cnt_day_cnt_map(data["bar_attendance"], last_day)
+
     if drawing_3_plots:
         ax.set_title("График зависимости количества дней\nот числа человек в баре в этот день")
     else:
@@ -140,34 +177,45 @@ def apply_in_bar_cnt_plot(ax, in_bar_cnt_day_cnt_map, drawing_3_plots=False, **k
         ax.legend()
 
 
-def apply_people_state_plot(ax, people, drawing_3_plots=False, day=None, bar_attendance_=None):
+# Характеристики прорисовки обозначений у точек
+annotate_kwargs = [dict(xytext=(2, 2),
+                        textcoords="offset points",
+                        ha='left', va='bottom', fontsize=9),
+                   dict(xytext=(2, -6),
+                        textcoords="offset points",
+                        ha='left', va='bottom', fontsize=9),
+                   dict(xytext=(2, -14),
+                        textcoords="offset points",
+                        ha='left', va='bottom', fontsize=9),
+                   dict(xytext=(-2, -6),
+                        textcoords="offset points",
+                        ha='right', va='bottom', fontsize=9)]
+annotate_kwargs += [dict(xytext=(0, 2),
+                         textcoords="offset points",
+                         ha='left', va='bottom', fontsize=9) for _ in range(20)]
+
+
+def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
+    if "people" in data:
+        people = data["people"]
+    else:
+        raise ArgumentsNotAssigned('data["people"]')
+    if "bar_attendance" in data:
+        bar_attendance = data["bar_attendance"]
+    else:
+        raise ArgumentsNotAssigned('data["bar_attendance"]')
+
     if not drawing_3_plots:
-        ax.set_title("Наборы предикторов у людей в день" + str(day))
+        ax.set_title("Наборы предикторов у людей в день" + str(last_day))
     ax.set_xlabel('Человек')
     ax.set_ylabel('Предикторы')
-
-    annotate_kwargs = [dict(xytext=(2, 2),
-                            textcoords="offset points",
-                            ha='left', va='bottom', fontsize=9),
-                       dict(xytext=(2, -6),
-                            textcoords="offset points",
-                            ha='left', va='bottom', fontsize=9),
-                       dict(xytext=(2, -14),
-                            textcoords="offset points",
-                            ha='left', va='bottom', fontsize=9),
-                       dict(xytext=(-2, -6),
-                            textcoords="offset points",
-                            ha='right', va='bottom', fontsize=9)]
-    annotate_kwargs += [dict(xytext=(0, 2),
-                             textcoords="offset points",
-                             ha='left', va='bottom', fontsize=9) for _ in range(20)]
 
     # отметим на ординате все предикторы в нужных цветах
     ax.set_yticks([predictor_i for predictor_i in range(len(predictors))])
     labels = ax.get_yticklabels()
     for i in range(len(ax.get_yticklabels())):
         color = 'red'
-        if predictors[i].is_day_success(day, bar_attendance_):
+        if predictors[i].is_day_success(last_day, bar_attendance):
             color = 'green'
         labels[i].set_color(color)
 
@@ -176,7 +224,7 @@ def apply_people_state_plot(ax, people, drawing_3_plots=False, day=None, bar_att
     labels = ax.get_xticklabels()
     for i in range(len(ax.get_xticklabels())):
         color = 'red'
-        if people[i].is_day_success(day, bar_attendance_):
+        if people[i].is_day_success(last_day, bar_attendance):
             color = 'green'
         labels[i].set_color(color)
 
@@ -189,11 +237,12 @@ def apply_people_state_plot(ax, people, drawing_3_plots=False, day=None, bar_att
     for man in people:
         x = [man.name for _ in man.predictor_set]
         # Если предиктор неактивен, он зачеркнут
-        y = [predictor_in_set.predictor.get_str_state() if predictor_in_set.predictor.is_active(people) else util.cross_text(predictor_in_set.predictor.get_str_state()) for predictor_in_set in man.predictor_set]
+        #y = [predictor_in_set.predictor.get_str_state() if predictor_in_set.predictor.is_active(people) else util.cross_text(predictor_in_set.predictor.get_str_state()) for predictor_in_set in man.predictor_set]
         y = [predictor_in_set.predictor.get_str_state() for predictor_in_set in man.predictor_set]
         point_title = [predictor_in_set.get_str_state() for predictor_in_set in man.predictor_set]
         ax.scatter(x, y, marker='o', color='blue')
 
+        # Нарисуем обозначения к точкам в месте, определенном в annotate_kwargs
         annotated_points_cnt = {}
         for i in range(len(point_title)):
             if y[i] not in annotated_points_cnt:
@@ -206,21 +255,25 @@ def apply_people_state_plot(ax, people, drawing_3_plots=False, day=None, bar_att
     ax.tick_params(axis='both', labelsize=14)
 
 
-def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, show=True, last_day=None):
-    if last_day is None and bar_attendance is not None:
-        last_day = len(bar_attendance) - 1
-    plot_data = []
-    if bar_attendance is not None:
-        plot_data.append(dict(data=bar_attendance, apply_plot_func=apply_bar_attendance_plot))
-    if in_bar_cnt_day_cnt_map is not None:
-        plot_data.append(dict(data=in_bar_cnt_day_cnt_map, apply_plot_func=apply_in_bar_cnt_plot))
-    if people is not None:
-        plot_data.append(dict(data=people, apply_plot_func=apply_people_state_plot))
+def draw_plots(plots, plot_data, last_day=None, show=True):
+    """
+    :param plots: [TYPE_PLOT]
+        список типов графиков, которые надо прорисовать
+    :param plot_data: {bar_attendance, in_bar_cnt_day_cnt_map, people}
+    :param show: Рисовать ли график
+    :param last_day: Последний день графика, который будет прорисован
+    :return:
+    """
+    if last_day is None and "bar_attendance" in plot_data:
+        last_day = len(plot_data["bar_attendance"]) - 1
+    if last_day is None:
+        raise ArgumentsNotAssigned("last_day")
 
-    if not plot_data:
-        return None
+    drawing_3_plots = False
+    if len(plots) == 3:
+        drawing_3_plots = True
 
-    if len(plot_data) == 3:
+    if drawing_3_plots:
         gridsize = (3, 3)
         fig = plt.figure(figsize=(14, 11))
         ax = [plt.subplot2grid(gridsize, (0, 1), colspan=1, rowspan=1),
@@ -228,7 +281,7 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, sh
               plt.subplot2grid(gridsize, (1, 0), colspan=3, rowspan=2)]
 
         title = "Наборы предикторов у людей \n"
-        title += "День: " + str(len(bar_attendance) - 1)
+        title += "День: " + str(last_day)
         fig.suptitle(title, x=0.04, horizontalalignment='left', fontsize=17)
         text = "Числа у точек (для предиктора в наборе):\n"
         text += "(кол-во активаций;\n"
@@ -242,22 +295,19 @@ def draw_plots(bar_attendance=None, in_bar_cnt_day_cnt_map=None, people=None, sh
         text += "для бара, предиктора и человека"
         fig.text(0.04, 0.695, text, horizontalalignment='left', fontsize=12)
         color = 'red'
-        if is_day_success(bar_attendance[last_day]):
+        if is_day_success(plot_data["bar_attendance"][last_day]):
             color = 'green'
-        fig.text(0.04, 0.665, "Количество человек в баре: {}".format(bar_attendance[last_day]), fontsize=15, color=color)
-
-
-    elif len(plot_data) == 2:
+        fig.text(0.04, 0.665, "Количество человек в баре: {}".format(plot_data["bar_attendance"][last_day]), fontsize=15, color=color)
+    elif len(plots) == 2:
         fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))
-    elif len(plot_data) == 1:
+    elif len(plots) == 1:
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 6))
         ax = [ax]
 
-    drawing_3_plots = False
-    if len(plot_data) == 3:
-        drawing_3_plots = True
-    for i in range(len(plot_data)):
-        plot_data[i]['apply_plot_func'](ax[i], plot_data[i]['data'], drawing_3_plots=drawing_3_plots, day=last_day, bar_attendance_=bar_attendance)
+    plots = sorted(plots)
+    for plot_type in range(len(plots)):
+        # Прорисуем график plot_type на аксесе ax[plot_type]
+        globals()[PLOT_APPLY_FUNCS[plot_type]](ax[plot_type], plot_data, last_day, drawing_3_plots=drawing_3_plots)
     if show:
         plt.show()
     plt.close()

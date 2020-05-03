@@ -15,3 +15,11 @@ class FunctionIsNotSpecified(Exception):
 
     def __str__(self):
         return self.message
+
+
+class ArgumentsNotAssigned(Exception):
+    def __init__(self, argument_name=''):
+        self.message = "Аргумент " + argument_name + " не передан"
+
+    def __str__(self):
+        return self.message
