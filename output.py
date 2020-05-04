@@ -1,5 +1,4 @@
 # Модуль вывода данных
-from predictor import predictors
 import sys
 from config import *
 from exceptions import ArgumentsNotAssigned
@@ -22,17 +21,13 @@ PLOT_APPLY_FUNCS = {PLOT_TYPE_BAR_ATTENDANCE: "apply_bar_attendance_plot",
                     PLOT_TYPE_PEOPLE_STATE: "apply_people_state_plot"}
 
 
-def print_progress(count, total):
+def print_progress(description, count, total):
     percent = int(count * 100 / total)
-    sys.stdout.write("\r" + "Барная жизнь: " + "... %d %%" % percent)
+    sys.stdout.write("\r" + description + ": " + "... %d %%" % percent)
     sys.stdout.flush()
 
 
-def print_predictor_cnt():
-    print("Количество использующихся предикторов: %d" % len(predictors))
-
-
-def print_bar_attandance(bar_attendance):
+def print_bar_attendance(bar_attendance):
     print("Посещаемость бара:")
     for day in range(DAY_CNT):
         if not day % 30:
@@ -204,6 +199,10 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
         bar_attendance = data["bar_attendance"]
     else:
         raise ArgumentsNotAssigned('data["bar_attendance"]')
+    if "predictors" in data:
+        predictors = data["predictors"]
+    else:
+        raise ArgumentsNotAssigned('data["predictors"]')
 
     if not drawing_3_plots:
         ax.set_title("Наборы предикторов у людей в день" + str(last_day))
@@ -236,6 +235,7 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
 
     for man in people:
         x = [man.name for _ in man.predictor_set]
+        # Здесь нет неактивных предикторов, значит все предикторы не зачеркнуты
         y = [predictor_in_set.predictor.get_str_state() for predictor_in_set in man.predictor_set]
         point_title = [predictor_in_set.get_str_state() for predictor_in_set in man.predictor_set]
         ax.scatter(x, y, marker='o', color='blue')
@@ -253,11 +253,11 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
     ax.tick_params(axis='both', labelsize=14)
 
 
-def draw_plots(plots, plot_data, last_day=None, show=True):
+def draw_plots(plots, history, last_day=None, show=True):
     """
     :param plots: [TYPE_PLOT]
         список типов графиков, которые надо прорисовать
-    :param plot_data: {bar_attendance, in_bar_cnt_day_cnt_map, people}
+    :param history: object of History
     :param show: Рисовать ли график
     :param last_day: Последний день графика, который будет прорисован
     :return:
@@ -265,10 +265,14 @@ def draw_plots(plots, plot_data, last_day=None, show=True):
     if not plots:
         return None
 
-    if last_day is None and "bar_attendance" in plot_data:
-        last_day = len(plot_data["bar_attendance"]) - 1
+    if last_day is None and history.bar_attendance:
+        last_day = len(history.bar_attendance) - 1
     if last_day is None:
         raise ArgumentsNotAssigned("last_day")
+
+    plot_data = {"bar_attendance": history.bar_attendance,
+                 "people": history.get_people_state(last_day),
+                 "predictors": history.get_predictors_state(last_day)}
 
     drawing_3_plots = False
     if len(plots) == 3:

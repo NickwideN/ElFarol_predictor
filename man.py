@@ -106,6 +106,9 @@ class Man:
     def analyze_day(self, today, bar_attendance):
         for predictor_in_set in self.predictor_set:
             predictor_in_set.analyze_day(today, bar_attendance)
+
+    def update_predictors(self):
+        for predictor_in_set in self.predictor_set:
             if predictor_in_set.need_to_change():
                 self.predictor_set.remove(predictor_in_set)
                 while len(self.predictor_set) < PREDICTOR_IN_SET_CNT:

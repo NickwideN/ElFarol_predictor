@@ -43,7 +43,7 @@ class Predictor:
         self.__active_cnt = 0
 
     def __repr__(self):
-        return self.name
+        return self.get_str_state()
 
     def decide_go(self, today, bar_attendance, trust=False):
         """
