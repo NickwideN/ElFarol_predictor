@@ -17,7 +17,7 @@
 # Количество человек в городе
 MAN_CNT = 10
 # максимальное количество человек в баре, когда там еще хорошо
-MAX_MAN_CNT_WHEN_GOOD = 6
+MAX_MAN_CNT_WHEN_GOOD = MAN_CNT * 0.6
 # Количество дней существования бара
 DAY_CNT = 300
 
@@ -101,4 +101,4 @@ def is_day_success(in_bar_cnt):
     :param in_bar_cnt: int
     :return: bool
     """
-    return in_bar_cnt <= MAX_MAN_CNT_WHEN_GOOD - (MAN_CNT - MAX_MAN_CNT_WHEN_GOOD) * 0.01
+    return in_bar_cnt <= MAX_MAN_CNT_WHEN_GOOD
