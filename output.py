@@ -285,8 +285,7 @@ def draw_plots(plots, history, last_day=None, show=True):
               plt.subplot2grid(gridsize, (0, 2), colspan=1, rowspan=1),
               plt.subplot2grid(gridsize, (1, 0), colspan=3, rowspan=2)]
 
-        title = "Наборы предикторов у людей \n"
-        title += "День: " + str(last_day)
+        title = "Наборы предикторов у людей. День: " + str(last_day)
         fig.suptitle(title, x=0.04, horizontalalignment='left', fontsize=17)
         text = "Числа у точек (для предиктора в наборе):\n"
         text += "(кол-во активаций;\n"
@@ -298,11 +297,13 @@ def draw_plots(plots, history, last_day=None, show=True):
         text += "процент успешных дней)\n\n"
         text += "Цвета означают успешность дня\n"
         text += "для бара, предиктора и человека"
-        fig.text(0.04, 0.695, text, horizontalalignment='left', fontsize=12)
+        fig.text(0.04, 0.725, text, horizontalalignment='left', fontsize=12)
         color = 'red'
         if is_day_success(plot_data["bar_attendance"][last_day]):
             color = 'green'
-        fig.text(0.04, 0.665, "Количество человек в баре: {}".format(plot_data["bar_attendance"][last_day]), fontsize=15, color=color)
+        fig.text(0.04, 0.695, "Количество человек в баре: {}".format(plot_data["bar_attendance"][last_day]), fontsize=15, color=color)
+        average_attendance = round(sum(plot_data["bar_attendance"][:last_day + 1]) / (last_day + 1), 2)
+        fig.text(0.04, 0.665, "Среднее количество в баре: {} ↗".format(average_attendance), fontsize=15, color="blue")
     elif len(plots) == 2:
         fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))
     elif len(plots) == 1:
