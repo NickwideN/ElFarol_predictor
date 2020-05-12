@@ -331,6 +331,7 @@ def draw_parameters(show=False):
     fig.text(0.04, 0.6, text, fontsize=15)
     if show:
         plt.show()
+    plt.close()
     return fig
 
 
