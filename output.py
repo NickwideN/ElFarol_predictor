@@ -253,16 +253,16 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
     ax.tick_params(axis='both', labelsize=14)
 
 
-def draw_plots(plots, history, last_day=None, show=True):
+def draw_plot(plot_types, history, last_day=None, show=True):
     """
-    :param plots: [TYPE_PLOT]
+    :param plot_types: [TYPE_PLOT]
         список типов графиков, которые надо прорисовать
     :param history: object of History
     :param show: Рисовать ли график
     :param last_day: Последний день графика, который будет прорисован
     :return:
     """
-    if not plots:
+    if not plot_types:
         return None
 
     if last_day is None and history.bar_attendance:
@@ -275,7 +275,7 @@ def draw_plots(plots, history, last_day=None, show=True):
                  "predictors": history.get_predictors_state(last_day)}
 
     drawing_3_plots = False
-    if len(plots) == 3:
+    if len(plot_types) == 3:
         drawing_3_plots = True
 
     if drawing_3_plots:
@@ -304,16 +304,16 @@ def draw_plots(plots, history, last_day=None, show=True):
         fig.text(0.04, 0.695, "Количество человек в баре: {}".format(plot_data["bar_attendance"][last_day]), fontsize=15, color=color)
         average_attendance = round(sum(plot_data["bar_attendance"][:last_day + 1]) / (last_day + 1), 2)
         fig.text(0.04, 0.665, "Среднее количество в баре: {} ↗".format(average_attendance), fontsize=15, color="blue")
-    elif len(plots) == 2:
+    elif len(plot_types) == 2:
         fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))
-    elif len(plots) == 1:
+    elif len(plot_types) == 1:
         fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 6))
         ax = [ax]
 
-    plots = sorted(plots)
+    plot_types = sorted(plot_types)
     for i in range(len(ax)):
         # Прорисуем график plot_type на аксесе ax[plot_type]
-        globals()[PLOT_APPLY_FUNCS[plots[i]]](ax[i], plot_data, last_day, drawing_3_plots=drawing_3_plots)
+        globals()[PLOT_APPLY_FUNCS[plot_types[i]]](ax[i], plot_data, last_day, drawing_3_plots=drawing_3_plots)
     if show:
         plt.show()
     plt.close()
