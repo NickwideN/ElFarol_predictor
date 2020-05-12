@@ -7,6 +7,8 @@ import os
 import datetime
 import config
 import util
+import multiprocessing
+
 
 # Типы графиков:
 # Посещаемость бара
@@ -172,7 +174,7 @@ def apply_in_bar_cnt_plot(ax, data, last_day, drawing_3_plots=False):
         ax.legend()
 
 
-# Характеристики прорисовки обозначений у точек
+# Характеристики прорисовки обозначений у точек (По крайней мере четыре точки с одинакомыми координатами будут иметь описание в разных местах, чтобы не текст не накладывался друг на друга)
 annotate_kwargs = [dict(xytext=(2, 2),
                         textcoords="offset points",
                         ha='left', va='bottom', fontsize=9),
@@ -330,6 +332,21 @@ def draw_parameters(show=False):
     if show:
         plt.show()
     return fig
+
+
+def __draw_and_save_plot(plot_types, history, last_day, plot_dir=None):
+    fig = draw_plot(plot_types, history, last_day=last_day, show=False)
+    if fig:
+        save_fig(fig, plot_dir=plot_dir, name="day" + str(last_day) + ".png")
+
+
+def draw_and_save_plots(plot_types, history, days, plot_dir=None):
+    pool_args = []
+    for day in days:
+        print_progress("Сохранение графиков за каждый день", day, DAY_CNT)
+        pool_args.append((plot_types, history, day, plot_dir))
+    with multiprocessing.Pool(processes=PROCESSES_CNT) as pool:
+        pool.starmap(__draw_and_save_plot, pool_args)
 
 
 def save_fig(fig, plot_dir=None, name=None):

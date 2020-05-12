@@ -67,11 +67,7 @@ if __name__ == '__main__':
         output.save_fig(fig, plot_dir=now_str, name="Parameters.png")
         fig = output.draw_plot([output.PLOT_TYPE_BAR_ATTENDANCE, output.PLOT_TYPE_IN_BAR_CNT], history, show=False)
         output.save_fig(fig, plot_dir=now_str, name="Result.png")
-        for day in range(DAY_CNT):
-            output.print_progress("Сохранение графиков за каждый день", day, DAY_CNT)
-            fig = output.draw_plot(SAVE_PLOTS, history, last_day=day, show=False)
-            if fig:
-                output.save_fig(fig, plot_dir=now_str, name="day" + str(day) + ".png")
+        output.draw_and_save_plots(SAVE_PLOTS, history, range(DAY_CNT), plot_dir=now_str)
 
     if SAVE_PLOTS and not SAVE_PLOTS_OF_EVERY_DAY:
         fig = output.draw_plot(SAVE_PLOTS, history, show=False)

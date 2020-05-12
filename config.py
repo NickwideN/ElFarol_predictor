@@ -96,6 +96,9 @@ SAVE_PLOTS_OF_EVERY_DAY = True
 # сортировать вывод предикторов? (True, False или 'both')
 SORT_PREDICTORS = True
 
+# количество процессов, одновременно рисующих графики и выполняющих анализ
+PROCESSES_CNT = 1
+
 
 def is_day_success(in_bar_cnt):
     """
