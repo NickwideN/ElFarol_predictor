@@ -113,6 +113,7 @@ def upload_predictors_in_life():
             continue
         pred_obj = Predictor(pred_name, pred_attr)
         predictors.append(pred_obj)
+    return predictors
 
 
 # функции предикторов

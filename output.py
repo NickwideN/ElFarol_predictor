@@ -7,7 +7,6 @@ import os
 import datetime
 import util
 import multiprocessing
-from predictor import predictors
 
 # Типы графиков:
 # Посещаемость бара
@@ -22,15 +21,15 @@ PLOT_APPLY_FUNCS = {PLOT_TYPE_BAR_ATTENDANCE: "apply_bar_attendance_plot",
                     PLOT_TYPE_PEOPLE_STATE: "apply_people_state_plot"}
 
 
-def get_parameters_str(in_plot=False):
+def get_parameters_str(predictors, in_plot=False):
     params_str = 'Параметры жизни:\n'
     for param in LOG_PARAMETERS_ORDER_BY:
         align_param = '' if in_plot else 36
-        params_str += ("{:<" + align_param + "}: {}\n").format(param, globals()[param])
+        params_str += ("{:<" + str(align_param) + "}: {}\n").format(param, globals()[param])
     align_predictor = '' if in_plot else 16
-    params_str += "\n{:<" + align_predictor + "}| {}? \n".format("Предикторы", "Предиктор доверяет")
+    params_str += ("\n{:<" + str(align_predictor) + "}| {}? \n").format("Предикторы", "Предиктор доверяет")
     for predictor in predictors:
-        params_str += "{:<" + align_predictor + "}: {}\n". \
+        params_str += ("{:<" + str(align_predictor) + "}: {}\n"). \
             format(predictor.name, 'Да' if predictor.get_trust_anywhere() else "Нет")
     return params_str
 
@@ -334,9 +333,9 @@ def draw_plot(plot_types, history, last_day=None, show=True):
     return fig
 
 
-def draw_parameters(show=False):
+def draw_parameters(predictors, show=False):
     fig = plt.figure(figsize=(5, 11))
-    text = get_parameters_str()
+    text = get_parameters_str(predictors)
     fig.text(0.04, 0.9, text, fontsize=15)
     if show:
         plt.show()
