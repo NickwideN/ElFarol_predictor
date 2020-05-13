@@ -43,6 +43,3 @@ class History:
             raise KeyError("Дня {} нет в predictors_states".format(day))
         return self.predictors_states[day]
 
-    # todo реализовать log_history
-    def log_history(self):
-        pass

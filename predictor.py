@@ -4,7 +4,6 @@ from config import is_day_success, TRUST_PREDICTORS_ANYWHERE, MAN_CNT, MIN_PERCE
 import json
 import re
 from exceptions import FunctionIsNotSpecified
-#import numpy as np
 
 # Набор использующихся предикторов
 predictors = []
@@ -90,6 +89,9 @@ class Predictor:
 
     def persent_success(self):
         return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0
+
+    def get_trust_anywhere(self):
+        return self.__trust_anywhere
 
     def get_str_state(self):
         return "{} ({};{:.0%})".format(self.name, self.__active_cnt, self.persent_success())

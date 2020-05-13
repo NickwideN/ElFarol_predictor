@@ -5,6 +5,7 @@ import output
 from exceptions import PredictorInSetCntExceedsPredictorCnt
 import datetime
 from history import History
+import analysis
 
 
 def live_day(today, people, bar_attendance, history):
@@ -29,7 +30,7 @@ def live_day(today, people, bar_attendance, history):
         man.update_predictors()
 
 
-if __name__ == '__main__':
+def live_life():
     upload_predictors_in_life()
     if PREDICTOR_IN_SET_CNT > len(predictors):
         raise PredictorInSetCntExceedsPredictorCnt(len(predictors))
@@ -55,6 +56,8 @@ if __name__ == '__main__':
     print()
     output.print_predictors(predictors)
 
+    print(output.get_parameters_str())
+
     now_str = datetime.datetime.now().strftime("%Y%m%dT%H-%M-%S")
 
     if DRAW_PLOTS or SAVE_PLOTS:
@@ -73,3 +76,8 @@ if __name__ == '__main__':
         fig = output.draw_plot(SAVE_PLOTS, history, show=False)
         if fig:
             output.save_fig(fig, plot_dir=None, name=now_str + ".png")
+
+
+if __name__ == '__main__':
+    live_life()
+

@@ -5,10 +5,9 @@ from exceptions import ArgumentsNotAssigned
 import matplotlib.pyplot as plt
 import os
 import datetime
-import config
 import util
 import multiprocessing
-
+from predictor import predictors
 
 # Типы графиков:
 # Посещаемость бара
@@ -21,6 +20,19 @@ PLOT_TYPE_PEOPLE_STATE = 2
 PLOT_APPLY_FUNCS = {PLOT_TYPE_BAR_ATTENDANCE: "apply_bar_attendance_plot",
                     PLOT_TYPE_IN_BAR_CNT: "apply_in_bar_cnt_plot",
                     PLOT_TYPE_PEOPLE_STATE: "apply_people_state_plot"}
+
+
+def get_parameters_str(in_plot=False):
+    params_str = 'Параметры жизни:\n'
+    for param in LOG_PARAMETERS_ORDER_BY:
+        align_param = '' if in_plot else 36
+        params_str += ("{:<" + align_param + "}: {}\n").format(param, globals()[param])
+    align_predictor = '' if in_plot else 16
+    params_str += "\n{:<" + align_predictor + "}| {}? \n".format("Предикторы", "Предиктор доверяет")
+    for predictor in predictors:
+        params_str += "{:<" + align_predictor + "}: {}\n". \
+            format(predictor.name, 'Да' if predictor.get_trust_anywhere() else "Нет")
+    return params_str
 
 
 def print_progress(description, count, total):
@@ -323,12 +335,9 @@ def draw_plot(plot_types, history, last_day=None, show=True):
 
 
 def draw_parameters(show=False):
-    fig = plt.figure(figsize=(14, 11))
-    text = "Параметры жизни:\n\n"
-    for param in dir(config):
-        if param[0].isupper():
-            text += "{}: {}\n".format(param, globals()[param])
-    fig.text(0.04, 0.6, text, fontsize=15)
+    fig = plt.figure(figsize=(5, 11))
+    text = get_parameters_str()
+    fig.text(0.04, 0.9, text, fontsize=15)
     if show:
         plt.show()
     plt.close()
