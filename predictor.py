@@ -44,6 +44,26 @@ class Predictor:
     def __repr__(self):
         return self.get_str_state()
 
+    def get_func_result(self, today, bar_attendance):
+        """
+        :param today: сегодняшний день. (не используется для определения совета)
+        :param bar_attendance: посещаемость, список. Не обязательно последний день списка -- today
+        :return: Значение функции
+        """
+        if today == 0:
+            return None
+        elif self.__days == 'all':
+            return self.__func(bar_attendance[:today])
+        else:
+            # соберем необходимые посещаемости дней
+            attendance_in_days = []
+            for day in self.__days:
+                if today >= -day:
+                    attendance_in_days.append(bar_attendance[today + day])
+            if attendance_in_days:
+                return self.__func(attendance_in_days)
+        return None
+
     def decide_go(self, today, bar_attendance, trust=False):
         """
         получить совет идти или не идти в бар
@@ -52,19 +72,9 @@ class Predictor:
         :param trust: bool Eсли False и ПУД меньше минимального, вернет совет наоборот (если can_trust_anywhere=True)
         :return:
         """
-        advice = True
-        if today == 0:
-            pass
-        elif self.__days == 'all':
-            advice = is_day_success(self.__func(bar_attendance[:today]))
-        else:
-            # соберем необходимые посещаемости дней
-            attendance_in_days = []
-            for day in self.__days:
-                if today >= -day:
-                    attendance_in_days.append(bar_attendance[today + day])
-            if attendance_in_days:
-                advice = is_day_success(self.__func(attendance_in_days))
+        result = self.get_func_result(today, bar_attendance)
+        advice = True if result is None else is_day_success(result)
+
         # Если не доверять совету, не доверять любому совету предиктора, не доверять советам любого предиктора и ПУД низкий
         # Поменяем совет
         if not trust and not self.__trust_anywhere and not TRUST_PREDICTORS_ANYWHERE and \
@@ -88,13 +98,20 @@ class Predictor:
         return self.__active_cnt
 
     def persent_success(self):
-        return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0
+        return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0.
 
     def get_trust_anywhere(self):
         return self.__trust_anywhere
 
-    def get_str_state(self):
-        return "{} ({};{:.0%})".format(self.name, self.__active_cnt, self.persent_success())
+    def get_str_state(self, today=None, bar_attendance=None):
+        state = "{} ({};{:.0%})".format(self.name, self.__active_cnt, self.persent_success())
+        if today is not None and bar_attendance is not None:
+            result = self.get_func_result(today, bar_attendance)
+            if result is None:
+                state += " ND"
+            else:
+                state += " {}".format(round(float(self.get_func_result(today, bar_attendance)), 4))
+        return state
 
     def is_active(self, people):
         return self in get_active_predictors(people)

@@ -250,13 +250,13 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
     # костыль: нарисуем невидимые точки для каждого предиктора, чтобы они все отображались на графике
     x = [0 for _ in predictors]
     # Если предиктор неактивен, он зачеркнут
-    y = [(predictor.get_str_state() if predictor.is_active(people) else util.cross_text(predictor.get_str_state())) for predictor in predictors]
+    y = [(predictor.get_str_state(last_day, bar_attendance) if predictor.is_active(people) else util.cross_text(predictor.get_str_state(last_day, bar_attendance))) for predictor in predictors]
     ax.scatter(x, y, marker='')
 
     for man in people:
         x = [man.name for _ in man.predictor_set]
         # Здесь нет неактивных предикторов, значит все предикторы не зачеркнуты
-        y = [predictor_in_set.predictor.get_str_state() for predictor_in_set in man.predictor_set]
+        y = [predictor_in_set.predictor.get_str_state(last_day, bar_attendance) for predictor_in_set in man.predictor_set]
         point_title = [predictor_in_set.get_str_state() for predictor_in_set in man.predictor_set]
         ax.scatter(x, y, marker='o', color='blue')
 
@@ -313,8 +313,8 @@ def draw_plot(plot_types, history, last_day=None, show=True):
         text += "количество дней подряд, когда\n"
         text += "ПУТ ниже допустимого минимального)\n\n"
         text += "Числа у предикторов (для предикторов):\n"
-        text += "(кол-во активаций;\n"
-        text += "процент успешных дней)\n\n"
+        text += "(кол-во активаций; процент успешных дней)\n"
+        text += "Результат функции\n\n"
         text += "Цвета означают успешность дня\n"
         text += "для бара, предиктора и человека"
         fig.text(0.04, 0.725, text, horizontalalignment='left', fontsize=12)
@@ -351,6 +351,13 @@ def draw_parameters(predictors, show=False):
 
 
 def __draw_and_save_plot(plot_types, history, last_day, plot_dir=None):
+    """
+    Рисуем и сохраняем график (нужна для многопроцессорного режима)
+    :param plot_types:
+    :param history:
+    :param last_day:
+    :param plot_dir:
+    """
     fig = draw_plot(plot_types, history, last_day=last_day, show=False)
     if fig:
         save_fig(fig, plot_dir=plot_dir, name="day" + str(last_day) + ".png")
@@ -361,8 +368,12 @@ def draw_and_save_plots(plot_types, history, days, plot_dir=None):
     for day in days:
         print_progress("Сохранение графиков за каждый день", day, DAY_CNT)
         pool_args.append((plot_types, history, day, plot_dir))
-    with multiprocessing.Pool(processes=PROCESSES_CNT) as pool:
-        pool.starmap(__draw_and_save_plot, pool_args)
+    if PROCESSES_CNT == 1:
+        for args in pool_args:
+            __draw_and_save_plot(*args)
+    else:
+        with multiprocessing.Pool(processes=PROCESSES_CNT) as pool:
+            pool.starmap(__draw_and_save_plot, pool_args)
 
 
 def save_fig(fig, plot_dir=None, name=None):
