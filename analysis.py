@@ -8,6 +8,8 @@ import life
 import datetime
 from predictor import upload_predictors_in_life
 
+# todo анализ почему то не работает для винды
+
 
 def analyze():
     now_str = datetime.datetime.now().strftime("%Y.%m.%d %H-%M-%S")
