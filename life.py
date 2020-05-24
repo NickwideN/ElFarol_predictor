@@ -15,15 +15,15 @@ def live_day(today, people, bar_attendance, history):
         if man.decide_go(today, bar_attendance):
             bar_attendance[today] += 1
 
-    # Сохраним состояние людей и предикторов в историю
-    history.save_state(people, predictors, today)
-
     # Вечер. Каждый активный предиктор анализирует день (подсчитывает активные и успешные дни)
     for predictor in get_active_predictors(people):
         predictor.analyze_day(today, bar_attendance)
     # Вечер. Каждый человек анализирует день (каждый предиктор в наборе человека подсчитывает активные и успешные дни)
     for man in people:
         man.analyze_day(today, bar_attendance)
+
+    # Сохраним состояние людей и предикторов в историю
+    history.save_state(people, predictors, today)
 
     # Утро. Каждый человек меняет свои предикторы, которые вчера посоветовали ему ересь(идти, когда в баре полно людей или не идти, когда в баре куча свободных мет)
     for man in people:
@@ -85,6 +85,7 @@ def live_life(log=True):
     upper_limit = max(bar_attendance[-20:])
     lower_limit = min(bar_attendance[-20:])
     return average_attendance, upper_limit, lower_limit
+
 
 if __name__ == '__main__':
     live_life()
