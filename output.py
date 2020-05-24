@@ -22,15 +22,22 @@ PLOT_APPLY_FUNCS = {PLOT_TYPE_BAR_ATTENDANCE: "apply_bar_attendance_plot",
 
 
 def get_parameters_str(predictors, in_plot=False):
+    """
+    Получить параметры жизни.
+    :param predictors:
+    :param in_plot: Параметры для графиков?
+    :return:
+    """
     params_str = 'Параметры жизни:\n'
     for param in LOG_PARAMETERS_ORDER_BY:
-        align_param = '' if in_plot else 36
+        align_param = '' if in_plot else 39
         params_str += ("{:<" + str(align_param) + "}: {}\n").format(param, globals()[param])
-    align_predictor = '' if in_plot else 16
-    params_str += ("\n{:<" + str(align_predictor) + "}| {}? \n").format("Предикторы", "Предиктор доверяет")
-    for predictor in predictors:
-        params_str += ("{:<" + str(align_predictor) + "}: {}\n"). \
-            format(predictor.name, 'Да' if predictor.get_trust_anywhere() else "Нет")
+    if not in_plot:
+        align_predictor = 16
+        params_str += ("\n{:<" + str(align_predictor) + "}| {}? \n").format("Предикторы", "Предиктору доверяют?")
+        for predictor in predictors:
+            params_str += ("{:<" + str(align_predictor) + "}: {}\n"). \
+                format(predictor.name, 'Да' if predictor.get_trust_anywhere() else "Нет")
     return params_str
 
 
@@ -335,7 +342,7 @@ def draw_plot(plot_types, history, last_day=None, show=True):
 
 def draw_parameters(predictors, show=False):
     fig = plt.figure(figsize=(5, 11))
-    text = get_parameters_str(predictors)
+    text = get_parameters_str(predictors, True)
     fig.text(0.04, 0.9, text, fontsize=15)
     if show:
         plt.show()
