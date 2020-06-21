@@ -94,7 +94,10 @@ DRAW_PLOTS = [0, 1, 2]
 # какие графики сохранять графики?
 SAVE_PLOTS = [0, 1, 2]
 # сохранять ли график за каждый день жизни бара? Если False и SAVE_PLOTS не пустой, то прога сохранит только график на последний день
-SAVE_PLOTS_OF_EVERY_DAY = True
+SAVE_PLOTS_OF_EVERY_DAY = False
+
+# показывать ПУД для предиктора?
+SHOW_PR_PUD = False
 
 # сортировать вывод предикторов? (True, False или 'both')
 SORT_PREDICTORS = True

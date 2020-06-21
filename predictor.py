@@ -1,6 +1,6 @@
 from typing import Any, Dict, Set
 
-from config import is_day_success, TRUST_PREDICTORS_ANYWHERE, MAN_CNT, MIN_PERCENT_WHEN_MAN_BELIEVE
+from config import is_day_success, TRUST_PREDICTORS_ANYWHERE, MAN_CNT, MIN_PERCENT_WHEN_MAN_BELIEVE, SHOW_PR_PUD
 import json
 import re
 from exceptions import FunctionIsNotSpecified
@@ -104,7 +104,10 @@ class Predictor:
         return self.__trust_anywhere
 
     def get_str_state(self, today=None, bar_attendance=None):
-        state = "{} ({};{:.0%})".format(self.name, self.__active_cnt, self.persent_success())
+        if SHOW_PR_PUD:
+            state = "{} ({};{:.0%})".format(self.name, self.__active_cnt, self.persent_success())
+        else:
+            state = "{}".format(self.name)
         if today is not None and bar_attendance is not None:
             result = self.get_func_result(today, bar_attendance)
             if result is None:

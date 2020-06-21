@@ -11,9 +11,9 @@ import multiprocessing
 # Типы графиков:
 # Посещаемость бара
 PLOT_TYPE_BAR_ATTENDANCE = 0
-# График зависимости количества дней от числа человек в баре в этот день
+# График зависимости количества дней от числа агентов в баре в этот день
 PLOT_TYPE_IN_BAR_CNT = 1
-# График состояния людей (наборы предикторов)
+# График состояния агентов (наборы предикторов)
 PLOT_TYPE_PEOPLE_STATE = 2
 
 PLOT_APPLY_FUNCS = {PLOT_TYPE_BAR_ATTENDANCE: "apply_bar_attendance_plot",
@@ -57,7 +57,7 @@ def print_bar_attendance(bar_attendance):
 
 def print_in_bar_cnt_day_cnt_map(bar_attendance):
     in_bar_cnt_day_cnt_map = create_in_bar_cnt_day_cnt_map(bar_attendance)
-    print("Количество дней, когда в баре было in_bar_cnt человек:")
+    print("Количество дней, когда в баре было in_bar_cnt агентов:")
     i = 0
     for in_bar_cnt in sorted(in_bar_cnt_day_cnt_map):
         if not i % 30:
@@ -101,7 +101,7 @@ def apply_bar_attendance_plot(ax, data, last_day, drawing_3_plots=False):
 
     ax.set_title("График посещаемости бара")
     ax.set_xlabel('День')
-    ax.set_ylabel('Количество человек в баре')
+    ax.set_ylabel('Количество агентов в баре')
 
     average_attendance = round(sum(bar_attendance) / DAY_CNT, 2)
 
@@ -152,11 +152,12 @@ def apply_in_bar_cnt_plot(ax, data, last_day, drawing_3_plots=False):
     else:
         in_bar_cnt_day_cnt_map = create_in_bar_cnt_day_cnt_map(data["bar_attendance"], last_day)
 
-    if drawing_3_plots:
-        ax.set_title("График зависимости количества дней\nот числа человек в баре в этот день")
-    else:
-        ax.set_title("График зависимости количества дней от числа человек в баре в этот день")
-    ax.set_xlabel('Количество человек в баре')
+    # if drawing_3_plots:
+    #     ax.set_title("График зависимости количества дней\nот числа агентов в баре в этот день")
+    # else:
+    #     ax.set_title("График зависимости количества дней от числа агентов в баре в этот день")
+    ax.set_title("Гистограмма посещаемости")
+    ax.set_xlabel('Количество агентов в баре')
     ax.set_ylabel('Количество дней')
 
     x = []
@@ -225,9 +226,9 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
         raise ArgumentsNotAssigned('data["predictors"]')
 
     if not drawing_3_plots:
-        ax.set_title("Наборы предикторов у людей в день" + str(last_day))
-    ax.set_xlabel('Человек')
-    ax.set_ylabel('Предикторы')
+        ax.set_title("Наборы предикторов у агентов в день" + str(last_day))
+    ax.set_xlabel('Агент')
+    ax.set_ylabel('Предиктор')
 
     # отметим на ординате все предикторы в нужных цветах
     ax.set_yticks([predictor_i for predictor_i in range(len(predictors))])
@@ -238,7 +239,7 @@ def apply_people_state_plot(ax, data, last_day, drawing_3_plots=False):
             color = 'green'
         labels[i].set_color(color)
 
-    # отметим на абсцисе всех людей в нужных цветах
+    # отметим на абсцисе всех агентов в нужных цветах
     ax.set_xticks([man.name for man in people])
     labels = ax.get_xticklabels()
     for i in range(len(ax.get_xticklabels())):
@@ -305,23 +306,25 @@ def draw_plot(plot_types, history, last_day=None, show=True):
               plt.subplot2grid(gridsize, (0, 2), colspan=1, rowspan=1),
               plt.subplot2grid(gridsize, (1, 0), colspan=3, rowspan=2)]
 
-        title = "Наборы предикторов у людей. День: " + str(last_day)
+        title = "Наборы предикторов у агентов. День: " + str(last_day)
         fig.suptitle(title, x=0.04, horizontalalignment='left', fontsize=17)
         text = "Числа у точек (для предиктора в наборе):\n"
-        text += "(кол-во активаций;\n"
-        text += "процент успешных дней (ПУТ);\n"
+        text += "(кол-во активаций;процент успешных дней (ПУД);\n"
         text += "количество дней подряд, когда\n"
-        text += "ПУТ ниже допустимого минимального)\n\n"
-        text += "Числа у предикторов (для предикторов):\n"
-        text += "(кол-во активаций; процент успешных дней)\n"
+        text += "ПУД ниже допустимого минимального)\n\n"
+        if SHOW_PR_PUD:
+            text += "Числа у предикторов (для предикторов):\n"
+            text += "(кол-во активаций; процент успешных дней)\n"
+        else:
+            text += "Числа у предикторов (для предикторов):\n"
         text += "Результат функции\n\n"
-        text += "Цвета означают успешность дня\n"
-        text += "для бара, предиктора и человека"
+        text += "Красные и зеленые цвета означают успешность \n"
+        text += "дня для бара, предиктора и агента"
         fig.text(0.04, 0.725, text, horizontalalignment='left', fontsize=12)
         color = 'red'
         if is_day_success(plot_data["bar_attendance"][last_day]):
             color = 'green'
-        fig.text(0.04, 0.695, "Количество человек в баре: {}".format(plot_data["bar_attendance"][last_day]), fontsize=15, color=color)
+        fig.text(0.04, 0.695, "Количество агентов в баре: {}".format(plot_data["bar_attendance"][last_day]), fontsize=15, color=color)
         average_attendance = round(sum(plot_data["bar_attendance"][:last_day + 1]) / (last_day + 1), 2)
         fig.text(0.04, 0.665, "Среднее количество в баре: {} ↗".format(average_attendance), fontsize=15, color="blue")
     elif len(plot_types) == 2:
