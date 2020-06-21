@@ -15,14 +15,14 @@
     "days": [-1],
     "trust_anywhere": false
   },
-  "prev_prev_day": {
+  "prev_prev": {
     "days": [-2]
   },
-  "average_2_days": {
+  "average_2": {
     "func": "average",
     "days": [-1, -2]
   },
-  "average_4_days": {
+  "average_4": {
     "func": "average",
     "days": [-1, -2, -3, -4]
   },
@@ -30,23 +30,23 @@
     "func": "average",
     "days": "all"
   },
-  "min_2_days": {
+  "min_2": {
     "func": "min",
     "days": [-1, -2]
   },
-  "min_3_days": {
+  "min_3": {
     "func": "min",
     "days": [-1, -2, -3]
   },
-  "max_2_days": {
+  "max_2": {
     "func": "max",
     "days": [-1, -2]
   },
-  "max_3_days": {
+  "max_3": {
     "func": "max",
     "days": [-1, -2, -3]
   },
-  "max_4_days": {
+  "max_4": {
     "func": "max",
     "days": [-1, -2, -3, -4]
   },
@@ -54,43 +54,43 @@
     "func": "max",
     "days": "all"
   },
-  "mirror_1_day": {
+  "mirror_1": {
     "func": "mirror_average",
     "days": [-1]
   },
-  "mirror_2_day": {
+  "mirror_2": {
     "func": "mirror_average",
     "days": [-1, -2]
   },
-  "mirror_3_day": {
+  "mirror_3": {
     "func": "mirror_average",
     "days": [-1, -2, -3]
   },
-  "mirror_4_day": {
+  "mirror_4": {
     "func": "mirror_average",
     "days": [-1, -2, -3, -4]
   },
-  "mirror_all_day": {
+  "mirror_all": {
     "func": "mirror_average",
     "days": "all"
   },
-  "median_1_day": {
+  "median_1": {
     "func": "median",
     "days": [-1]
   },
-  "median_2_day": {
+  "median_2": {
     "func": "median",
     "days": [-1, -2]
   },
-  "median_3_day": {
+  "median_3": {
     "func": "median",
     "days": [-1, -2, -3]
   },
-  "median_4_day": {
+  "median_4": {
     "func": "median",
     "days": [-1, -2, -3, -4]
   },
-  "median_all_days": {
+  "median_all": {
     "func": "median",
     "days": "all"
   }
