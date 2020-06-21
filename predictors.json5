@@ -11,7 +11,7 @@
 4. use -- использовать ли предиктор. По умолчанию True
 */
 {
-  "prev_day": {
+  "prev": {
     "days": [-1],
     "trust_anywhere": false
   },
@@ -50,7 +50,7 @@
     "func": "max",
     "days": [-1, -2, -3, -4]
   },
-  "max_all_days": {
+  "max_all": {
     "func": "max",
     "days": "all"
   },
