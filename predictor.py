@@ -109,6 +109,8 @@ class Predictor:
         else:
             state = "{}".format(self.name)
         if today is not None and bar_attendance is not None:
+            if not SHOW_PR_PUD:
+                state += " |"
             result = self.get_func_result(today, bar_attendance)
             if result is None:
                 state += " ND"
