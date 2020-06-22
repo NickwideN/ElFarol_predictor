@@ -82,8 +82,9 @@ def live_life(log=True):
                 output.save_fig(fig, plot_dir=None, name=now_str + ".png")
 
     average_attendance = round(sum(bar_attendance) / DAY_CNT, 2)
-    upper_limit = max(bar_attendance[-20:])
-    lower_limit = min(bar_attendance[-20:])
+    min_area_day_cnt = min(AREA_DAY_CNT, len(bar_attendance))
+    upper_limit = max(bar_attendance[-min_area_day_cnt:])
+    lower_limit = min(bar_attendance[-min_area_day_cnt:])
     return average_attendance, upper_limit, lower_limit
 
 
