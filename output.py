@@ -110,7 +110,7 @@ def apply_bar_attendance_plot(ax, data, last_day, drawing_3_plots=False):
     ax.plot(x, y, color='red', label="Лимит бара: " + str(MAX_MAN_CNT_WHEN_GOOD))
 
     # рисуем границы области
-    if len(bar_attendance) > AREA_DAY_CNT:
+    if len(bar_attendance) > AREA_DAY_CNT + 1:
         upper_limit = max(bar_attendance[-AREA_DAY_CNT:])
         x, y = [0, DAY_CNT], [upper_limit, upper_limit]
         ax.plot(x, y, color='green', label="Верхняя граница области: " + str(upper_limit))
