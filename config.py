@@ -109,6 +109,22 @@ SHOW_PR_PUD = False
 # сортировать вывод предикторов? (True, False или 'both')
 SORT_PREDICTORS = True
 
+# Порядок записи параметров в результаты при сохранении ежедневных графиков и при анализе
+LOG_PARAMETERS_ORDER_BY = [
+    "MAN_CNT",
+    "MAX_MAN_CNT_WHEN_GOOD",
+    "DAY_CNT",
+    "PREDICTOR_IN_SET_CNT",
+    "ARE_UNIQUE_PREDICTORS_IN_SET",
+    "FOLLOW_TYPE",
+    "UPDATE_TYPE",
+    "SAFE_ACTIVE_DAY_CNT",
+    "MIN_PERCENT_SUCCESS_FOR_PredictorInSet",
+    "MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN",
+    "TRUST_PREDICTORS_ANYWHERE",
+    "MIN_PERCENT_WHEN_MAN_BELIEVE"
+]
+
 ###### analysis config ######
 """
 Анализ означает, что жизнь будет прожита несколько раз с параметрами, указанными выше, и среднее результатов экспериментов запишется в файл. 
@@ -127,19 +143,6 @@ ANALYZE_FILE_NAME = 'analysis_results.txt'
 ###### system config ######
 # количество процессов, одновременно рисующих графики и выполняющих анализ
 PROCESSES_CNT = 1
-# Порядок записи параметров в результаты при сохранении ежедневных графиков и при анализе
-LOG_PARAMETERS_ORDER_BY = [
-    "MAN_CNT",
-    "MAX_MAN_CNT_WHEN_GOOD",
-    "DAY_CNT",
-    "PREDICTOR_IN_SET_CNT",
-    "ARE_UNIQUE_PREDICTORS_IN_SET",
-    "FOLLOW_TYPE",
-    "MIN_PERCENT_SUCCESS_FOR_PredictorInSet",
-    "MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN",
-    "TRUST_PREDICTORS_ANYWHERE",
-    "MIN_PERCENT_WHEN_MAN_BELIEVE"
-]
 
 
 def is_day_success(in_bar_cnt):
