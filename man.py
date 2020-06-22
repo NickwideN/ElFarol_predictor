@@ -28,9 +28,6 @@ class PredictorInSet:
         elif self.persent_success() < MIN_PERCENT_SUCCESS_FOR_PredictorInSet:
             self.__day_cnt_with_percent_under_min += 1
 
-    def need_to_change(self):
-        return self.__day_cnt_with_percent_under_min > MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN
-
     def change(self):
         """
             Поменять предиктор
@@ -46,6 +43,12 @@ class PredictorInSet:
 
     def __hash__(self):
         return hash(self.predictor.name)
+
+    def day_cnt_with_percent_under_min(self):
+        return self.__day_cnt_with_percent_under_min
+
+    def active_cnt(self):
+        return self.__active_cnt
 
     def persent_success(self):
         return (self.__success_cnt / self.__active_cnt) if self.__active_cnt else 0
@@ -108,14 +111,33 @@ class Man:
             predictor_in_set.analyze_day(today, bar_attendance)
 
     def update_predictors(self):
-        for predictor_in_set in self.predictor_set:
-            if predictor_in_set.need_to_change():
+        if UPDATE_TYPE == 0:
+            predictors_for_remove = []
+            for predictor_in_set in self.predictor_set:
+                if predictor_in_set.day_cnt_with_percent_under_min() > MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN:
+                    predictors_for_remove.append(predictor_in_set)
+            for predictor_in_set in predictors_for_remove:
                 self.predictor_set.remove(predictor_in_set)
-                while len(self.predictor_set) < PREDICTOR_IN_SET_CNT:
-                    if ARE_UNIQUE_PREDICTORS_IN_SET:
-                        self.predictor_set.add(PredictorInSet())
-                    else:
-                        self.predictor_set.append(PredictorInSet())
+
+        elif UPDATE_TYPE == 1:
+            min_predictor_in_set = None  # предиктор в наборе, у которого минимальный ПУД
+            # найдем сначала такой потенциальный предиктор
+            for predictor_in_set in self.predictor_set:
+                if predictor_in_set.active_cnt() > SAFE_ACTIVE_DAY_CNT:
+                    min_predictor_in_set = predictor_in_set
+                    break
+            # А теперь найдем предиктор с min ПУД
+            if min_predictor_in_set:
+                for predictor_in_set in self.predictor_set:
+                    if predictor_in_set.active_cnt() > SAFE_ACTIVE_DAY_CNT and predictor_in_set.persent_success() > min_predictor_in_set.persent_success():
+                        min_predictor_in_set = predictor_in_set
+                self.predictor_set.remove(min_predictor_in_set)
+        # добавляем в набор случайные предикторы, пока их количество не будет равно PREDICTOR_IN_SET_CNT
+        while len(self.predictor_set) < PREDICTOR_IN_SET_CNT:
+            if ARE_UNIQUE_PREDICTORS_IN_SET:
+                self.predictor_set.add(PredictorInSet())
+            else:
+                self.predictor_set.append(PredictorInSet())
 
     def is_day_success(self, today, bar_attendance):
         return self.decide_go(today, bar_attendance) == is_day_success(bar_attendance[today])
