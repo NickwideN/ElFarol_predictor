@@ -59,8 +59,8 @@ REMOVE_TYPE = 0
 MIN_PERCENT_SUCCESS_FOR_PredictorInSet = 0.7
 # Максимальное количество дней подряд с процентом ниже минимального для PredictorInSet
 MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN = 3
-# Для UPDATE_TYPE = 1. Количество первый дней (безопастных дней), когда предиктор не будет даже сравниматься с другими предикторами в наборе.
-SAFE_ACTIVE_DAY_CNT = 2
+# Для REMOVE_TYPE = 1. Количество первый дней (безопастных дней), когда предиктор не будет даже сравниматься с другими предикторами в наборе.
+SAFE_ACTIVE_DAY_CNT = 0
 
 ###### predictor config ######
 """
@@ -122,7 +122,7 @@ LOG_PARAMETERS_ORDER_BY = [
     "PREDICTOR_IN_SET_CNT",
     "ARE_UNIQUE_PREDICTORS_IN_SET",
     "FOLLOW_TYPE",
-    "UPDATE_TYPE",
+    "REMOVE_TYPE",
     "SAFE_ACTIVE_DAY_CNT",
     "MIN_PERCENT_SUCCESS_FOR_PredictorInSet",
     "MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN",
