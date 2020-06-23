@@ -53,7 +53,7 @@ FOLLOW_TYPE = 0
 # каким образом будет обновляться набор предикторов
 # 0 - удаляются все неугодные предикторы, на их места ставится случайный. Зависит от MIN_PERCENT_SUCCESS_FOR_PredictorInSet и MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN
 # 1 - удаляется предиктор с минимальным процентом успеха, на его место ставится новый случайный. Зависит от MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN и SAFE_ACTIVE_DAY_CNT
-UPDATE_TYPE = 1
+REMOVE_TYPE = 0
 
 # минимальный процент успешных дней (МПУД) для PredictorInSet. Если процент успешных дней предиктора в наборе меньше МПУД MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN дней подряд и предиктор в эти дни ошибался, предиктор заменится на новый случайный
 MIN_PERCENT_SUCCESS_FOR_PredictorInSet = 0.7

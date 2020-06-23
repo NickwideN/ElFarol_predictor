@@ -106,14 +106,14 @@ class Man:
 
     def update_predictors(self):
         # удаление неугодный предикторов
-        if UPDATE_TYPE == 0:
+        if REMOVE_TYPE == 0:
             predictors_for_remove = []
             for predictor_in_set in self.predictor_set:
                 if predictor_in_set.day_cnt_with_percent_under_min() > MAX_DAY_CNT_WITH_PERCENT_UNDER_MIN:
                     predictors_for_remove.append(predictor_in_set)
             for predictor_in_set in predictors_for_remove:
                 self.predictor_set.remove(predictor_in_set)
-        elif UPDATE_TYPE == 1:
+        elif REMOVE_TYPE == 1:
             min_predictor_in_set = None  # предиктор в наборе, у которого минимальный ПУД
             # найдем сначала такой потенциальный предиктор
             for predictor_in_set in self.predictor_set:
