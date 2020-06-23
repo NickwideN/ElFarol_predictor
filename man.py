@@ -28,12 +28,6 @@ class PredictorInSet:
         elif self.persent_success() < MIN_PERCENT_SUCCESS_FOR_PredictorInSet:
             self.__day_cnt_with_percent_under_min += 1
 
-    def change(self):
-        """
-            Поменять предиктор
-        """
-        self.__init__()
-
     # следующие функции нужны для уникальности предикторов в наборе
     def __eq__(self, other):
         return self.predictor == other.predictor
@@ -61,11 +55,11 @@ class Man:
     predictor_set: Set or List[PredictorInSet]
 
     def __init__(self, name=''):
+        self.name = name
         if ARE_UNIQUE_PREDICTORS_IN_SET:
             self.predictor_set = set()
         else:
             self.predictor_set = list()
-        self.name = name
         while len(self.predictor_set) < PREDICTOR_IN_SET_CNT:
             if ARE_UNIQUE_PREDICTORS_IN_SET:
                 self.predictor_set.add(PredictorInSet())
@@ -111,6 +105,7 @@ class Man:
             predictor_in_set.analyze_day(today, bar_attendance)
 
     def update_predictors(self):
+        # удаление неугодный предикторов
         if UPDATE_TYPE == 0:
             predictors_for_remove = []
             for predictor_in_set in self.predictor_set:
@@ -118,7 +113,6 @@ class Man:
                     predictors_for_remove.append(predictor_in_set)
             for predictor_in_set in predictors_for_remove:
                 self.predictor_set.remove(predictor_in_set)
-
         elif UPDATE_TYPE == 1:
             min_predictor_in_set = None  # предиктор в наборе, у которого минимальный ПУД
             # найдем сначала такой потенциальный предиктор
