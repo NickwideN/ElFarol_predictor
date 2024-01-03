@@ -3,7 +3,7 @@
 
 Основан на теории предикторов Артура Брайана
 
-Для работы программы запустите файл life.py
+Для работы программы запустите файл life.py, предвартельно настроив параметры в config.py
 
 В [config.py](https://github.com/NickwideN/ElFarol_predictor/blob/master/config.py) описана задача
 
