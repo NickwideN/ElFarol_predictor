@@ -1,11 +1,11 @@
 # ElFarol_predictor
-Задача про бар ElFarol, как угадать, что в данный день в баре будет мало народа.
+Задача про игру в баре ElFarol "Как предсказать количество человек в баре".
 
 Основан на теории предикторов Артура Брайана
 
 Для работы программы запустите файл life.py
 
-В config.py описана задача
+В [config.py](https://github.com/NickwideN/ElFarol_predictor/blob/master/config.py) описана задача
 
 Подробнее проблема описана тут [wiki](https://ru.wikipedia.org/wiki/%D0%97%D0%B0%D0%B4%D0%B0%D1%87%D0%B0_%D0%B1%D0%B0%D1%80%D0%B0_%C2%AB%D0%AD%D0%BB%D1%8C_%D0%A4%D0%B0%D1%80%D0%BE%D0%BB%D1%8C%C2%BB)
 
